@@ -538,3 +538,23 @@ function dancingspoon_share_placement( string $content ): string {
 	return false === $pos ? $content . $row : substr( $content, 0, $pos ) . $row . substr( $content, $pos );
 }
 add_filter( 'the_content', 'dancingspoon_share_placement', 20 );
+
+
+/**
+ * Favicons from the theme (assets/favicon/, built from assets/images/logo.svg): WordPress's own Site Icon
+ * output is removed so the icon follows the theme release on every site instead of a per-site upload.
+ */
+function dancingspoon_favicons(): void {
+	$base = get_theme_file_uri( 'assets/favicon/' );
+	$v    = '?v=' . rawurlencode( (string) wp_get_theme()->get( 'Version' ) );
+	echo '<link rel="icon" href="' . esc_url( $base . 'favicon.ico' . $v ) . '" sizes="32x32">' . "\n";
+	echo '<link rel="icon" href="' . esc_url( $base . 'icon.svg' . $v ) . '" type="image/svg+xml">' . "\n";
+	echo '<link rel="apple-touch-icon" href="' . esc_url( $base . 'apple-touch-icon.png' . $v ) . '">' . "\n";
+	echo '<link rel="manifest" href="' . esc_url( $base . 'site.webmanifest' . $v ) . '">' . "\n";
+	echo '<meta name="theme-color" content="#f8f5ef">' . "\n";
+}
+foreach ( array( 'wp_head', 'login_head', 'admin_head' ) as $hook ) {
+	remove_action( $hook, 'wp_site_icon', 99 );
+	add_action( $hook, 'dancingspoon_favicons', 99 );
+}
+add_filter( 'get_site_icon_url', fn() => get_theme_file_uri( 'assets/favicon/icon-512.png' ) );
