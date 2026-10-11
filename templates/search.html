@@ -1,0 +1,48 @@
+<!-- wp:template-part {"slug":"header","area":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","layout":{"type":"constrained","wideSize":"1200px"}} -->
+<main class="wp-block-group">
+	<!-- wp:group {"className":"ds-archive-head","layout":{"type":"constrained","contentSize":"760px"}} -->
+	<div class="wp-block-group ds-archive-head">
+		<!-- wp:paragraph {"align":"center","className":"ds-kicker"} -->
+		<p class="has-text-align-center ds-kicker">Search</p>
+		<!-- /wp:paragraph -->
+		<!-- wp:query-title {"type":"search","showPrefix":true,"textAlign":"center","level":1} /-->
+		<!-- wp:search {"label":"Search","showLabel":false,"placeholder":"Search recipes…","buttonText":"Search","buttonPosition":"button-inside","buttonUseIcon":true,"align":"center"} /-->
+		
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":5,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"align":"wide"} -->
+	<div class="wp-block-query alignwide">
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"style":{"spacing":{"blockGap":"var:preset|spacing|40"}}} -->
+			<!-- wp:group {"tagName":"article","className":"ds-card","layout":{"type":"default"}} -->
+			<article class="wp-block-group ds-card">
+				<!-- wp:post-featured-image {"isLink":true,"sizeSlug":"dancingspoon-card"} /-->
+				<!-- wp:group {"className":"ds-card__body","layout":{"type":"default"}} -->
+				<div class="wp-block-group ds-card__body">
+					<!-- wp:post-terms {"term":"category","className":"is-style-pill"} /-->
+					<!-- wp:post-title {"level":2,"isLink":true} /-->
+					<!-- wp:post-excerpt {"excerptLength":22} /-->
+					<!-- wp:post-date {"format":"F j, Y","style":{"spacing":{"margin":{"top":"var:preset|spacing|20"}}}} /-->
+				</div>
+				<!-- /wp:group -->
+			</article>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+		<!-- wp:query-pagination {"paginationArrow":"arrow","layout":{"type":"flex","justifyContent":"center"}} -->
+			<!-- wp:query-pagination-previous /-->
+			<!-- wp:query-pagination-numbers /-->
+			<!-- wp:query-pagination-next /-->
+		<!-- /wp:query-pagination -->
+		<!-- wp:query-no-results -->
+			<!-- wp:paragraph {"align":"center"} -->
+			<p class="has-text-align-center">Nothing matched. Try an ingredient — leeks, pistachio, cheesecake…</p>
+			<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer","tagName":"footer"} /-->

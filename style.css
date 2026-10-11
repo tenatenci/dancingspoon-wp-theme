@@ -2,12 +2,126 @@
 Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
-Description: The Dancing Spoon theme. Placeholder scaffold — the real theme is built on top of this; the Version header is the release version the pipeline tags and deploys.
-Version: 0.1.0
+Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
+Version: 0.2.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: dancingspoon
+Tags: blog, food, block-patterns, full-site-editing, wide-blocks, custom-colors, custom-logo
 */
+
+/* ---------- base ---------- */
+:root {
+	--ds-radius: var(--wp--custom--radius--card, 6px);
+	--ds-shadow: var(--wp--custom--shadow--card);
+	--ds-ease: 220ms cubic-bezier(.2, .7, .2, 1);
+}
+html { scroll-behavior: smooth; }
+img { height: auto; max-width: 100%; }
+::selection { background: var(--wp--preset--color--oat); color: var(--wp--preset--color--contrast); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--wp--preset--color--accent); outline-offset: 3px; }
+
+/* ---------- header ---------- */
+.ds-header { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--wp--preset--color--base) 88%, transparent); backdrop-filter: saturate(140%) blur(10px); -webkit-backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid var(--wp--preset--color--border); }
+.ds-header .wp-block-site-logo img { width: 72px; height: 72px; object-fit: contain; }
+.ds-topbar { font-size: var(--wp--preset--font-size--x-small); letter-spacing: .14em; text-transform: uppercase; color: var(--wp--preset--color--muted); }
+.ds-header .wp-block-navigation a { padding: .35rem 0; }
+
+/* ---------- cards ---------- */
+.is-style-card, .ds-card { background: var(--wp--preset--color--surface); border-radius: var(--ds-radius); box-shadow: var(--ds-shadow); overflow: hidden; transition: transform var(--ds-ease), box-shadow var(--ds-ease); }
+.ds-card:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(41,37,34,.08), 0 24px 48px -24px rgba(41,37,34,.35); }
+.ds-card .wp-block-post-featured-image { margin: 0; }
+.ds-card .wp-block-post-featured-image img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; display: block; border-radius: 0; transition: transform 600ms ease; }
+.ds-card:hover .wp-block-post-featured-image img { transform: scale(1.03); }
+.ds-card .ds-card__body { padding: 1.25rem 1.4rem 1.5rem; }
+.ds-card .wp-block-post-title { font-size: var(--wp--preset--font-size--large); margin: .35rem 0 .5rem; }
+.ds-card .wp-block-post-excerpt__excerpt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* category pills */
+.is-style-pill a, .ds-pill { display: inline-block; background: var(--wp--preset--color--sand); color: var(--wp--preset--color--primary) !important; border-radius: 999px; padding: .3rem .75rem; font-size: var(--wp--preset--font-size--x-small); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+.is-style-pill a:hover, .ds-pill:hover { background: var(--wp--preset--color--oat); }
+.is-style-pill .wp-block-post-terms__separator { display: none; }
+.is-style-pill a + a { margin-left: .35rem; }
+
+/* ---------- hero ---------- */
+.ds-hero { border-radius: calc(var(--ds-radius) * 2); overflow: hidden; }
+.ds-hero .wp-block-post-featured-image img { aspect-ratio: 16 / 11; object-fit: cover; width: 100%; display: block; }
+.ds-hero__copy { padding: clamp(1.5rem, 4vw, 3.5rem); }
+.ds-hero .wp-block-post-title { font-size: var(--wp--preset--font-size--xx-large); margin: .5rem 0 1rem; }
+.ds-kicker { font-size: var(--wp--preset--font-size--x-small); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--wp--preset--color--accent); }
+
+/* ---------- section titles ---------- */
+.ds-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--wp--preset--color--border); padding-bottom: .75rem; margin-bottom: 1.75rem; }
+.ds-section-head a { font-size: var(--wp--preset--font-size--x-small); letter-spacing: .14em; text-transform: uppercase; text-decoration: none; font-weight: 600; }
+
+/* ---------- category tiles ---------- */
+.ds-tiles .wp-block-cover { border-radius: var(--ds-radius); overflow: hidden; min-height: 190px; }
+.ds-tiles .wp-block-cover img { transition: transform 700ms ease; }
+.ds-tiles .wp-block-cover:hover img { transform: scale(1.05); }
+.ds-tiles .wp-block-cover .wp-block-heading { font-size: var(--wp--preset--font-size--large); }
+.ds-tiles .wp-block-cover a { color: inherit; text-decoration: none; }
+
+/* ---------- buttons ---------- */
+.is-style-outline-pill .wp-block-button__link { background: transparent; color: var(--wp--preset--color--primary); border: 1.5px solid var(--wp--preset--color--primary); }
+.is-style-outline-pill .wp-block-button__link:hover { background: var(--wp--preset--color--primary); color: var(--wp--preset--color--base); }
+
+/* ---------- separator ---------- */
+.is-style-spoon { border: 0; text-align: center; height: auto; background: none; }
+.is-style-spoon::before { content: "✦ ✦ ✦"; color: var(--wp--preset--color--oat); letter-spacing: .6em; font-size: .8rem; }
+
+/* ---------- single ---------- */
+.ds-single-hero img { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; border-radius: calc(var(--ds-radius) * 2); }
+.ds-single-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; justify-content: center; align-items: center; color: var(--wp--preset--color--muted); font-size: var(--wp--preset--font-size--small); }
+.ds-single-meta > * { margin: 0; }
+.entry-content > * + * { margin-block-start: 1.25rem; }
+.entry-content .wp-block-heading { margin-block-start: 2.25rem; }
+.entry-content .wp-block-spacer { height: 1.25rem !important; }
+.entry-content figure.wp-block-image img { border-radius: var(--ds-radius); }
+.wprm-recipe-jump-container, .wprm-recipe-print-container { margin: 0 .35rem; }
+.wprm-recipe-jump, .wprm-recipe-print { border-radius: 999px !important; padding: .7rem 1.3rem !important; font-weight: 600 !important; letter-spacing: .08em !important; text-transform: uppercase !important; font-size: .75rem !important; background: var(--wp--preset--color--primary) !important; color: var(--wp--preset--color--base) !important; border: 0 !important; text-decoration: none !important; }
+
+/* ---------- WP Recipe Maker card in the theme's voice ---------- */
+.wprm-recipe-container { background: var(--wp--preset--color--sand); border: 1px solid var(--wp--preset--color--border); border-radius: calc(var(--ds-radius) * 2); padding: clamp(1.25rem, 3vw, 2.25rem) !important; margin: 2.5rem 0; }
+.wprm-recipe-container .wprm-recipe-name, .wprm-recipe-container .wprm-recipe-header { font-family: var(--wp--preset--font-family--heading) !important; font-weight: 400 !important; color: var(--wp--preset--color--primary) !important; letter-spacing: -.01em; }
+.wprm-recipe-container .wprm-recipe-name { font-size: var(--wp--preset--font-size--x-large) !important; }
+.wprm-recipe-container .wprm-recipe-header { font-size: var(--wp--preset--font-size--large) !important; border-bottom: 1px solid var(--wp--preset--color--oat); padding-bottom: .35rem; }
+.wprm-recipe-container .wprm-recipe-details-label, .wprm-recipe-container .wprm-recipe-details-unit { color: var(--wp--preset--color--muted) !important; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+.wprm-recipe-container .wprm-recipe-details { color: var(--wp--preset--color--contrast); }
+.wprm-recipe-container .wprm-recipe-image img { border-radius: var(--ds-radius); }
+.wprm-recipe-container a, .wprm-recipe-container .wprm-recipe-link { color: var(--wp--preset--color--primary) !important; }
+.wprm-recipe-container .wprm-recipe-ingredient, .wprm-recipe-container .wprm-recipe-instruction { line-height: 1.6; }
+.wprm-recipe-container .wprm-recipe-instruction-text { margin-bottom: .35rem; }
+.wprm-recipe-container .wprm-recipe-notes-container { background: var(--wp--preset--color--surface); border-radius: var(--ds-radius); padding: 1rem 1.25rem; }
+.wprm-recipe-container .wprm-recipe-rating .wprm-rating-star-full polygon { fill: var(--wp--preset--color--accent) !important; }
+.wprm-recipe-container .wprm-color-accent, .wprm-recipe-container .wprm-recipe-print-button, .wprm-recipe-container .wprm-recipe-pin-button { background: var(--wp--preset--color--primary) !important; border-color: var(--wp--preset--color--primary) !important; color: var(--wp--preset--color--base) !important; border-radius: 999px !important; }
+.wprm-recipe-container .wprm-recipe-adjustable-servings input { border-radius: var(--ds-radius); border: 1px solid var(--wp--preset--color--border); }
+
+/* ---------- archive / pagination ---------- */
+.ds-archive-head { text-align: center; padding: 3rem 0 1rem; }
+.ds-archive-head .wp-block-query-title { font-size: var(--wp--preset--font-size--xx-large); }
+.wp-block-query-pagination { justify-content: center; margin-top: 2.5rem; }
+.wp-block-query-pagination a, .wp-block-query-pagination .page-numbers { text-decoration: none; padding: .4rem .8rem; border-radius: 999px; border: 1px solid var(--wp--preset--color--border); font-size: var(--wp--preset--font-size--small); }
+.wp-block-query-pagination .current { background: var(--wp--preset--color--primary); color: var(--wp--preset--color--base); border-color: var(--wp--preset--color--primary); }
+
+/* ---------- footer ---------- */
+.ds-footer { background: var(--wp--preset--color--primary); color: var(--wp--preset--color--base); }
+.ds-footer a, .ds-footer .wp-block-heading { color: var(--wp--preset--color--base); }
+.ds-footer .wp-block-heading { font-size: var(--wp--preset--font-size--large); }
+.ds-footer .wp-block-categories-list { list-style: none; padding: 0; margin: 0; }
+.ds-footer .wp-block-categories-list li { margin: .25rem 0; }
+.ds-footer .wp-block-categories-list a { text-decoration: none; }
+.ds-footer .wp-block-categories-list a:hover { text-decoration: underline; }
+.ds-footer .wp-block-social-links .wp-social-link { background: color-mix(in srgb, var(--wp--preset--color--base) 15%, transparent); }
+.ds-footer__legal { font-size: var(--wp--preset--font-size--x-small); letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+
+/* ---------- comments ---------- */
+.wp-block-comments .comment { border-top: 1px solid var(--wp--preset--color--border); padding-top: 1rem; }
+.wp-block-post-comments-form .submit { border-radius: 999px; }
+
+/* ---------- misc ---------- */
+@media (max-width: 781px) { .ds-hero .wp-block-post-title { font-size: var(--wp--preset--font-size--x-large); } .ds-header .wp-block-site-logo img { width: 56px; height: 56px; } }
+@media (prefers-reduced-motion: reduce) { .ds-card, .ds-card img, .ds-tiles img { transition: none !important; } }
+@media print { .ds-header, .ds-footer, .wp-block-comments, .wp-block-post-comments-form { display: none !important; } }
