@@ -182,6 +182,7 @@ add_action( 'customize_register', 'dancingspoon_customize' );
  */
 function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	static $hero_id = 0;
+	static $carousel_ids = array();
 	$query_id = (int) ( $block->context['queryId'] ?? 0 );
 	if ( ! in_array( $query_id, array( 1, 2, 8 ), true ) || ! ( is_home() || is_front_page() ) ) {
 		return $query;
@@ -216,27 +217,35 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	}
 
 	if ( 8 === $query_id ) {
-		// the carousel
-		$query['posts_per_page'] = (int) get_theme_mod( 'dancingspoon_carousel_count', 6 );
-		$query['offset']         = 0;
-		if ( $hero_id ) {
-			$query['post__not_in'] = array( $hero_id );
-		}
-		if ( 'random' === get_theme_mod( 'dancingspoon_carousel_mode', 'latest' ) ) {
-			$query['orderby'] = 'rand';
+		// the carousel: pick its posts now so the grid below can leave them out
+		$carousel_ids = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => (int) get_theme_mod( 'dancingspoon_carousel_count', 6 ),
+				'post__not_in'   => $hero_id ? array( $hero_id ) : array(),
+				'orderby'        => 'random' === get_theme_mod( 'dancingspoon_carousel_mode', 'latest' ) ? 'rand' : 'date',
+				'order'          => 'DESC',
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		$query['offset'] = 0;
+		if ( $carousel_ids ) {
+			$query['post__in']       = $carousel_ids;
+			$query['orderby']        = 'post__in';
+			$query['posts_per_page'] = count( $carousel_ids );
 			unset( $query['order'] );
-		} else {
-			$query['orderby'] = 'date';
-			$query['order']   = 'DESC';
 		}
 		return $query;
 	}
 
-	// query 2: the grid
+	// query 2: the grid — never the hero, never what the carousel already shows
 	$query['posts_per_page'] = $grid_count;
 	$query['offset']         = 0;
-	if ( $hero_id ) {
-		$query['post__not_in'] = array( $hero_id );
+	$shown                   = array_filter( array_merge( array( $hero_id ), $carousel_ids ) );
+	if ( $shown ) {
+		$query['post__not_in'] = array_values( $shown );
 	}
 	if ( 'random' === $grid_mode ) {
 		$query['orderby'] = 'rand';
