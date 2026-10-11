@@ -91,9 +91,6 @@ $mail  = $email ? 'mailto:' . $email : home_url( '/contact/' );
 		<!-- wp:details {"summary":"My recipe turned out differently. What went wrong?"} -->
 		<details class="wp-block-details"><summary><?php esc_html_e( 'My recipe turned out differently. What went wrong?', 'dancingspoon' ); ?></summary><!-- wp:paragraph --><p><?php esc_html_e( 'Leave a comment under the recipe with what you changed and what happened — that helps the next reader too, and I answer there.', 'dancingspoon' ); ?></p><!-- /wp:paragraph --></details>
 		<!-- /wp:details -->
-		<!-- wp:details {"summary":"Do you take recipe requests?"} -->
-		<details class="wp-block-details"><summary><?php esc_html_e( 'Do you take recipe requests?', 'dancingspoon' ); ?></summary><!-- wp:paragraph --><p><?php esc_html_e( 'Yes. Croatian and Balkan classics first, but anything that can be made in a small kitchen on a weeknight is fair game.', 'dancingspoon' ); ?></p><!-- /wp:paragraph --></details>
-		<!-- /wp:details -->
 	</div>
 	<!-- /wp:group -->
 </div>
