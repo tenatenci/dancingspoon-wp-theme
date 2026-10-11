@@ -506,12 +506,14 @@ function dancingspoon_share_shortcode(): string {
 		'whatsapp'  => array( 'WhatsApp', 'https://api.whatsapp.com/send?text=' . $t . '%20' . $u ),
 		'email'     => array( 'E-mail', 'mailto:?subject=' . $t . '&body=' . $u ),
 	);
-	$out = '<div class="ds-share"><span class="ds-share__label">' . esc_html__( 'Share', 'dancingspoon' ) . '</span>';
+	$out = '<div class="ds-share"><span class="ds-share__label">' . esc_html__( 'Share', 'dancingspoon' ) . '</span><ul class="ds-share__list">';
 	foreach ( $links as $key => $def ) {
 		list( $label, $href ) = $def;
-		$out .= '<a class="ds-share__btn ds-share__btn--' . $key . '" href="' . esc_url( $href ) . '" target="_blank" rel="noopener nofollow"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">' . $icons[ $key ] . '</svg><span>' . esc_html( $label ) . '</span></a>';
+		/* translators: %s: network name */
+		$aria = sprintf( __( 'Share on %s', 'dancingspoon' ), $label );
+		$out .= '<li><a class="ds-share__btn ds-share__btn--' . $key . '" href="' . esc_url( $href ) . '" target="_blank" rel="noopener nofollow" aria-label="' . esc_attr( $aria ) . '" title="' . esc_attr( $label ) . '" data-pin-custom="true" data-pin-do="none"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">' . $icons[ $key ] . '</svg></a></li>';
 	}
-	$out .= '<button type="button" class="ds-share__btn ds-share__copy" data-url="' . esc_url( $url ) . '" data-copied="' . esc_attr__( 'Copied', 'dancingspoon' ) . '"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">' . $icons['link'] . '</svg><span>' . esc_html__( 'Copy link', 'dancingspoon' ) . '</span></button></div>';
+	$out .= '<li><button type="button" class="ds-share__btn ds-share__copy" data-url="' . esc_url( $url ) . '" data-copied="' . esc_attr__( 'Link copied', 'dancingspoon' ) . '" aria-label="' . esc_attr__( 'Copy link', 'dancingspoon' ) . '" title="' . esc_attr__( 'Copy link', 'dancingspoon' ) . '"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">' . $icons['link'] . '</svg></button></li></ul></div>';
 	return $out;
 }
 add_shortcode( 'ds_share', 'dancingspoon_share_shortcode' );
