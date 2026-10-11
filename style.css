@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.6.2
+Version: 0.6.3
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -332,3 +332,12 @@ main > .wp-block-group.ds-section { margin-top: 3rem !important; }
 .wp-block-comments { margin-top: 2.5rem; }
 .wp-block-post-comments-form { margin-top: 1.5rem; }
 .wp-block-comments .wp-block-comments-title, .wp-block-comments .comment-reply-title { font-size: var(--wp--preset--font-size--large); }
+/* 0.6.3: one clean card (no frame inside a frame), Pin and Print identical */
+.wprm-recipe-container { background: var(--wp--preset--color--surface); border: 1px solid var(--wp--preset--color--border); border-radius: calc(var(--ds-radius) * 2); box-shadow: var(--ds-shadow); }
+.wprm-recipe-container .wprm-layout-container { --wprm-layout-container-background-color: transparent !important; }
+.wprm-recipe-container .meadow-header { border-top: 0 !important; padding-top: 0 !important; }
+.wprm-recipe-container a.wprm-recipe-pin, .wprm-recipe-container a.wprm-recipe-print, .wprm-recipe-container .wprm-recipe-link-button, .wprm-recipe-container .wprm-recipe-pin-button, .wprm-recipe-container .wprm-recipe-print-button {
+	display: inline-block !important; background: var(--wp--preset--color--primary) !important; color: var(--wp--preset--color--base) !important; border: 0 !important; border-radius: 999px !important;
+	padding: .7rem 1.3rem !important; font-weight: 600 !important; letter-spacing: .08em !important; text-transform: uppercase !important; font-size: .75rem !important; line-height: 1.2 !important; text-decoration: none !important;
+}
+.wprm-recipe-container a.wprm-recipe-pin:hover, .wprm-recipe-container a.wprm-recipe-print:hover { background: var(--wp--preset--color--accent) !important; }
