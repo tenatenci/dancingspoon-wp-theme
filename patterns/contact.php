@@ -6,8 +6,10 @@
  * Block Types: core/post-content
  * Description: Ways to reach Tena — e-mail, social, collaborations, and what to expect.
  */
-$email = get_theme_mod( 'dancingspoon_id_email', '' );
-$mail  = $email ? 'mailto:' . $email : home_url( '/contact/' );
+$email   = get_theme_mod( 'dancingspoon_id_email', '' );
+$mail    = $email ? 'mailto:' . $email : home_url( '/contact/' );
+$address = trim( (string) get_theme_mod( 'dancingspoon_id_address', '' ) );
+$owner   = trim( (string) get_theme_mod( 'dancingspoon_id_owner_name', '' ) );
 ?>
 <!-- wp:group {"className":"ds-contact","layout":{"type":"constrained","contentSize":"980px"}} -->
 <div class="wp-block-group ds-contact">
@@ -33,6 +35,11 @@ $mail  = $email ? 'mailto:' . $email : home_url( '/contact/' );
 				<!-- wp:paragraph {"className":"ds-contact__action"} -->
 				<p class="ds-contact__action"><a href="<?php echo esc_url( $mail ); ?>"><?php echo $email ? esc_html( $email ) : dancingspoon_identity( 'email' ); ?></a></p>
 				<!-- /wp:paragraph -->
+				<?php if ( $address ) : ?>
+				<!-- wp:paragraph {"className":"ds-contact__post"} -->
+				<p class="ds-contact__post"><span class="ds-contact__post-label"><?php esc_html_e( 'By post', 'dancingspoon' ); ?></span><?php echo $owner ? esc_html( $owner ) . '<br>' : ''; ?><?php echo nl2br( esc_html( $address ) ); ?></p>
+				<!-- /wp:paragraph -->
+				<?php endif; ?>
 			</div>
 			<!-- /wp:group -->
 		</div>
