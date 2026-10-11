@@ -12,7 +12,7 @@
 	<!-- wp:group {"align":"wide","className":"ds-section-head","layout":{"type":"flex","justifyContent":"space-between"}} -->
 	<div class="wp-block-group alignwide ds-section-head">
 		<!-- wp:heading {"level":2} -->
-		<h2 class="wp-block-heading"><?php esc_html_e( 'Latest recipes', 'dancingspoon' ); ?></h2>
+		<h2 class="wp-block-heading"><?php esc_html_e( 'More recipes', 'dancingspoon' ); ?></h2>
 		<!-- /wp:heading -->
 		<!-- wp:paragraph -->
 		<p><a href="<?php echo esc_url( home_url( '/recipes/' ) ); ?>"><?php esc_html_e( 'All recipes →', 'dancingspoon' ); ?></a></p>

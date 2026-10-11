@@ -35,6 +35,16 @@ function dancingspoon_styles(): void {
 add_action( 'wp_enqueue_scripts', 'dancingspoon_styles' );
 
 /**
+ * Carousel behaviour (front page only).
+ */
+function dancingspoon_scripts(): void {
+	if ( is_home() || is_front_page() ) {
+		wp_enqueue_script( 'dancingspoon-carousel', get_theme_file_uri( 'assets/js/carousel.js' ), array(), DANCINGSPOON_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'dancingspoon_scripts' );
+
+/**
  * Pattern category so the home sections are findable in the inserter.
  */
 function dancingspoon_patterns(): void {
@@ -116,6 +126,34 @@ function dancingspoon_customize( WP_Customize_Manager $wp_customize ): void {
 			'choices' => array( 3 => '3', 6 => '6', 9 => '9' ),
 		)
 	);
+	$wp_customize->add_setting( 'dancingspoon_carousel_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
+	$wp_customize->add_control(
+		'dancingspoon_carousel_mode',
+		array(
+			'section' => 'dancingspoon_front',
+			'label'   => __( 'Carousel shows', 'dancingspoon' ),
+			'type'    => 'select',
+			'choices' => array( 'latest' => __( 'The latest recipes', 'dancingspoon' ), 'random' => __( 'Random recipes', 'dancingspoon' ) ),
+		)
+	);
+	$wp_customize->add_setting(
+		'dancingspoon_carousel_count',
+		array( 'default' => 6, 'sanitize_callback' => fn( $v ) => in_array( (int) $v, array( 6, 9, 12 ), true ) ? (int) $v : 6 )
+	);
+	$wp_customize->add_control(
+		'dancingspoon_carousel_count',
+		array(
+			'section' => 'dancingspoon_front',
+			'label'   => __( 'Recipes in the carousel', 'dancingspoon' ),
+			'type'    => 'select',
+			'choices' => array( 6 => '6', 9 => '9', 12 => '12' ),
+		)
+	);
+	$wp_customize->add_setting( 'dancingspoon_carousel_autoplay', array( 'default' => true, 'sanitize_callback' => fn( $v ) => (bool) $v ) );
+	$wp_customize->add_control(
+		'dancingspoon_carousel_autoplay',
+		array( 'section' => 'dancingspoon_front', 'label' => __( 'Carousel scrolls by itself (every 5 s)', 'dancingspoon' ), 'type' => 'checkbox' )
+	);
 }
 add_action( 'customize_register', 'dancingspoon_customize' );
 
@@ -125,7 +163,7 @@ add_action( 'customize_register', 'dancingspoon_customize' );
 function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	static $hero_id = 0;
 	$query_id = (int) ( $block->context['queryId'] ?? 0 );
-	if ( ! in_array( $query_id, array( 1, 2 ), true ) || ! ( is_home() || is_front_page() ) ) {
+	if ( ! in_array( $query_id, array( 1, 2, 8 ), true ) || ! ( is_home() || is_front_page() ) ) {
 		return $query;
 	}
 	$hero_mode  = get_theme_mod( 'dancingspoon_hero_mode', 'latest' );
@@ -149,6 +187,23 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 			$query['post__in'] = array( $hero_id );
 			$query['offset']   = 0;
 			$query['orderby']  = 'post__in';
+		}
+		return $query;
+	}
+
+	if ( 8 === $query_id ) {
+		// the carousel
+		$query['posts_per_page'] = (int) get_theme_mod( 'dancingspoon_carousel_count', 6 );
+		$query['offset']         = 0;
+		if ( $hero_id ) {
+			$query['post__not_in'] = array( $hero_id );
+		}
+		if ( 'random' === get_theme_mod( 'dancingspoon_carousel_mode', 'latest' ) ) {
+			$query['orderby'] = 'rand';
+			unset( $query['order'] );
+		} else {
+			$query['orderby'] = 'date';
+			$query['order']   = 'DESC';
 		}
 		return $query;
 	}

@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.4.2
+Version: 0.5.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -250,3 +250,49 @@ body { --wprm-popup-accent: var(--wp--preset--color--primary) !important; --comm
 .ds-header__tools { gap: var(--wp--preset--spacing--30); }
 .ds-search.wp-block-search__button-only:not(.wp-block-search__searchfield-hidden) { margin-right: var(--wp--preset--spacing--30); }
 .ds-search.wp-block-search__button-only:not(.wp-block-search__searchfield-hidden) .wp-block-search__inside-wrapper { width: 240px !important; }
+
+/* ======================================================================
+   0.5.0 — compact single head, justified text, recipe card colours, carousel
+   ====================================================================== */
+.ds-single-head .wp-block-post-title { margin: .25rem 0 .5rem; }
+.ds-single-actions { margin-top: .5rem; }
+.ds-single-meta { margin-top: .75rem; font-size: var(--wp--preset--font-size--small); color: var(--wp--preset--color--muted); gap: .5rem; }
+.ds-single-meta .ds-single-meta__dot { opacity: .5; }
+.ds-single-meta .wp-block-post-author-name, .ds-single-meta .wp-block-post-date { color: var(--wp--preset--color--muted); }
+
+/* justified running text */
+.entry-content p, .entry-content li, .entry-content blockquote,
+.wprm-recipe-container .wprm-recipe-summary, .wprm-recipe-container .wprm-recipe-instruction-text, .wprm-recipe-container .wprm-recipe-notes, .wprm-recipe-container .wprm-recipe-notes-container p, .wprm-recipe-container .wprm-recipe-notes-container li,
+.wp-block-post-excerpt__excerpt, .ds-footer__blurb, .ds-footer__small, .wp-block-post-author-biography, .wp-block-comment-content p {
+	text-align: justify; text-justify: inter-word; hyphens: auto; -webkit-hyphens: auto;
+}
+.entry-content ul, .entry-content ol { padding-left: 1.25rem; }
+.entry-content li { margin: .25rem 0; }
+.entry-content li::marker { color: var(--wp--preset--color--accent); }
+.entry-content .wp-block-image { margin: 1.75rem 0; }
+
+/* WP Recipe Maker: explicit colours for every part that the Meadow template leaves to its own variables */
+.wprm-recipe-container .wprm-layout-container { --wprm-layout-container-text-color: var(--wp--preset--color--contrast) !important; --wprm-layout-container-background-color: var(--wp--preset--color--surface) !important; }
+.wprm-recipe-container .wprm-recipe-details-container-pills .wprm-recipe-meta-container-pill { --pill-background-color: var(--wp--preset--color--sand) !important; --pill-text-color: var(--wp--preset--color--primary) !important; --pill-border-color: var(--wp--preset--color--oat) !important; background: var(--wp--preset--color--sand) !important; color: var(--wp--preset--color--primary) !important; border-color: var(--wp--preset--color--oat) !important; }
+.wprm-recipe-container .wprm-recipe-meta-container-pill * { color: var(--wp--preset--color--primary) !important; }
+.wprm-recipe-container .wprm-recipe-details-label { color: var(--wp--preset--color--muted) !important; }
+.wprm-recipe-container .wprm-recipe-jump-to-section-container a { --wprm-jump-to-section-text-color: var(--wp--preset--color--primary) !important; --wprm-jump-to-section-background: var(--wp--preset--color--sand) !important; --wprm-jump-to-section-border-radius: 999px !important; }
+.wprm-recipe-container .wprm-recipe-jump-to-section-container a .wprm-recipe-icon svg { fill: var(--wp--preset--color--primary) !important; }
+.wprm-recipe-container, .wprm-recipe-container .wprm-recipe-ingredient, .wprm-recipe-container .wprm-recipe-instruction { color: var(--wp--preset--color--contrast); }
+.wprm-recipe-container .wprm-recipe-ingredient-notes, .wprm-recipe-container .wprm-recipe-ingredient-unit { color: var(--wp--preset--color--muted) !important; }
+.wprm-recipe-container .wprm-recipe-equipment-container, .wprm-recipe-container .wprm-recipe-nutrition-container { color: var(--wp--preset--color--contrast); }
+.wprm-recipe-container .wprm-recipe-header, .wprm-recipe-container .wprm-recipe-name, .wprm-recipe-container .wprm-recipe-group-name { color: var(--wp--preset--color--primary) !important; }
+.wprm-recipe-container .wprm-recipe-print-button, .wprm-recipe-container .wprm-recipe-pin-button, .wprm-recipe-container a.wprm-recipe-link.wprm-recipe-link-button { color: var(--wp--preset--color--base) !important; }
+.wprm-recipe-container .wprm-recipe-image img { border-radius: var(--ds-radius) !important; }
+
+/* carousel */
+.ds-carousel__nav { display: flex; gap: .5rem; }
+.ds-carousel__btn { width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--wp--preset--color--border); background: var(--wp--preset--color--surface); color: var(--wp--preset--color--primary); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: background var(--ds-ease), color var(--ds-ease); }
+.ds-carousel__btn:hover { background: var(--wp--preset--color--primary); color: var(--wp--preset--color--base); border-color: var(--wp--preset--color--primary); }
+.ds-carousel .ds-section-head { margin-bottom: 1.25rem; }
+.ds-carousel .wp-block-post-template.ds-carousel__track { display: flex !important; flex-wrap: nowrap; gap: var(--wp--preset--spacing--40); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: 0; padding: .25rem .25rem 1rem; margin: 0 -.25rem; list-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.ds-carousel .ds-carousel__track::-webkit-scrollbar { display: none; }
+.ds-carousel .ds-carousel__track > li { flex: 0 0 calc((100% - 2 * var(--wp--preset--spacing--40)) / 3); scroll-snap-align: start; display: flex; }
+.ds-carousel .ds-carousel__track > li > .ds-card { width: 100%; display: flex; flex-direction: column; }
+@media (max-width: 1024px) { .ds-carousel .ds-carousel__track > li { flex-basis: calc((100% - var(--wp--preset--spacing--40)) / 2); } }
+@media (max-width: 600px) { .ds-carousel .ds-carousel__track > li { flex-basis: 82%; } .ds-carousel__btn { width: 36px; height: 36px; } }
