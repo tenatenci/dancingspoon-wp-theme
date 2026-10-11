@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.6.1
+Version: 0.6.2
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -299,3 +299,36 @@ body { --wprm-popup-accent: var(--wp--preset--color--primary) !important; --comm
 /* 0.5.1: carousel items share one baseline; Pin matches Print */
 .ds-carousel .ds-carousel__track > li { margin: 0 !important; }
 .wprm-recipe-container .wprm-recipe-pin-button, .wprm-recipe-container a.wprm-recipe-link.wprm-recipe-link-button { font-weight: 600 !important; letter-spacing: .08em !important; text-transform: uppercase !important; font-size: .75rem !important; padding: .7rem 1.3rem !important; }
+
+/* ======================================================================
+   0.6.2 — compact editorial rhythm for the article body
+   ====================================================================== */
+.entry-content { font-size: 1.0625rem; line-height: 1.62; }
+.entry-content > * + * { margin-block-start: .8rem; }
+.entry-content p { margin: 0; }
+/* spacers are leftovers from the old page builder: keep them small and never stack them with a heading */
+.entry-content .wp-block-spacer { height: .4rem !important; margin: 0 !important; }
+.entry-content .wp-block-spacer + .wp-block-heading, .entry-content .wp-block-spacer + .wp-block-spacer { margin-block-start: 0 !important; }
+/* in-article headings: smaller than page titles, tight below */
+.entry-content h2.wp-block-heading { font-size: clamp(1.45rem, 1.2rem + .8vw, 1.75rem); margin: 1.6rem 0 .45rem; letter-spacing: 0; text-transform: none; line-height: 1.2; }
+.entry-content h3.wp-block-heading { font-size: 1.25rem; margin: 1.15rem 0 .3rem; line-height: 1.25; }
+.entry-content h4.wp-block-heading { font-size: 1.05rem; margin: 1rem 0 .25rem; font-family: var(--wp--preset--font-family--body); font-weight: 600; color: var(--wp--preset--color--contrast); }
+.entry-content h2.wp-block-heading + *, .entry-content h3.wp-block-heading + *, .entry-content h4.wp-block-heading + * { margin-block-start: .35rem; }
+/* lists: tight, markers in the accent */
+.entry-content ul, .entry-content ol { margin: .35rem 0 .6rem; padding-left: 1.35rem; }
+.entry-content li { margin: .12rem 0; line-height: 1.5; }
+.entry-content li > p { margin: 0; }
+/* numbered-step paragraphs ("1. Put the …") read as a list too */
+.entry-content p + p { margin-block-start: .7rem; }
+/* images and the recipe card */
+.entry-content .wp-block-image { margin: 1.4rem 0; }
+.entry-content .wp-block-image img { width: 100%; }
+.entry-content .wprm-recipe-container { margin: 2rem 0 0; }
+/* page sections: less air between article, "more recipes" and comments */
+.ds-single-hero.wp-block-post-featured-image { margin-top: 1.6rem !important; margin-bottom: 1.8rem !important; }
+.ds-single-actions { margin-top: .35rem; }
+.ds-single-meta { margin-top: .5rem; }
+main > .wp-block-group.ds-section { margin-top: 3rem !important; }
+.wp-block-comments { margin-top: 2.5rem; }
+.wp-block-post-comments-form { margin-top: 1.5rem; }
+.wp-block-comments .wp-block-comments-title, .wp-block-comments .comment-reply-title { font-size: var(--wp--preset--font-size--large); }
