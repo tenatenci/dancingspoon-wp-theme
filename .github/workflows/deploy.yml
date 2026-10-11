@@ -101,7 +101,8 @@ jobs:
           set -euo pipefail
           umask 077
           echo "$KUBECONFIG_B64" | base64 -d > "$RUNNER_TEMP/kubeconfig"
-          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+          export KUBECONFIG="$RUNNER_TEMP/kubeconfig"           # this step; GITHUB_ENV covers the next ones
+          echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
           kubectl auth whoami
 
       - name: Install and activate
