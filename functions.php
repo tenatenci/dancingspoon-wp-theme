@@ -443,3 +443,32 @@ function dancingspoon_mail_notice(): void {
 	echo '<div class="notice notice-warning"><p>' . esc_html__( 'Dancing Spoon: outgoing mail (comment notifications, password resets) still uses PHP mail(), which the domain’s SPF record does not authorise. Set DS_SMTP_HOST, DS_SMTP_USER and DS_SMTP_PASS on the container to send through the Hetzner mailbox.', 'dancingspoon' ) . '</p></div>';
 }
 add_action( 'admin_notices', 'dancingspoon_mail_notice' );
+
+/**
+ * Most older posts start with the very photo that is also the featured image; the single template already
+ * shows that one wide above the text, so the leading copy inside the content is dropped (matched by attachment
+ * id, or by file name when the block carries no id).
+ */
+function dancingspoon_drop_duplicate_hero( string $content ): string {
+	if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+	$thumb_id = (int) get_post_thumbnail_id();
+	if ( ! $thumb_id ) {
+		return $content;
+	}
+	if ( ! preg_match( '#^\s*(?:<p>\s*)?(<figure[^>]*class="[^"]*wp-block-image[^"]*"[^>]*>.*?</figure>|<img[^>]+>)(?:\s*</p>)?#is', $content, $m ) ) {
+		return $content;
+	}
+	$block = $m[1];
+	$same  = preg_match( '#wp-image-' . $thumb_id . '\b#', $block );
+	if ( ! $same && preg_match( '#src="([^"]+)"#i', $block, $src ) ) {
+		$strip = static function ( string $url ): string {
+			$base = strtolower( pathinfo( wp_parse_url( $url, PHP_URL_PATH ) ?: '', PATHINFO_FILENAME ) );
+			return preg_replace( '#(-\d+x\d+|-scaled)$#', '', $base );
+		};
+		$same = $strip( $src[1] ) === $strip( (string) wp_get_attachment_url( $thumb_id ) );
+	}
+	return $same ? substr( $content, strlen( $m[0] ) ) : $content;
+}
+add_filter( 'the_content', 'dancingspoon_drop_duplicate_hero', 5 );
