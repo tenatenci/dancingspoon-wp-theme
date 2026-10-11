@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.8.0
+Version: 0.8.1
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -456,3 +456,12 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 	.ds-contact__lede { font-size: 1.3rem; }
 	.ds-footer .ds-brand--footer .ds-brand__mark { width: 56px; height: 56px; }
 }
+/* 0.8.1: the overlay menu must escape the sticky header — no backdrop-filter (it would become the containing
+   block of the fixed overlay and trap it inside the bar); a solid header instead */
+.ds-header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--wp--preset--color--base); }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open { position: fixed !important; inset: 0 !important; z-index: 100000; background: var(--wp--preset--color--base) !important; overflow-y: auto; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content { display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container { display: flex; flex-direction: column; flex-wrap: wrap; white-space: normal; align-items: flex-start; gap: 1.1rem; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content { color: var(--wp--preset--color--primary); }
+.ds-header .wp-block-navigation__responsive-container-close { top: 1.1rem; right: 1.1rem; color: var(--wp--preset--color--primary); }
+.ds-header .wp-block-navigation__responsive-container-close svg, .ds-header .wp-block-navigation__responsive-container-open svg { width: 28px; height: 28px; }
