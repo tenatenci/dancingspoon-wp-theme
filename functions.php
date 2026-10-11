@@ -524,10 +524,7 @@ function dancingspoon_share_placement( string $content ): string {
 		return $content;
 	}
 	$row = '<div class="ds-single-share">' . dancingspoon_share_shortcode() . '</div>';
-	$pos = strpos( $content, '<div class="wprm-recipe-container' );
-	if ( false === $pos ) {
-		$pos = strpos( $content, '<div id="wprm-recipe-container' );
-	}
+	$pos = preg_match( '#<div[^>]*\bwprm-recipe-container\b#i', $content, $m, PREG_OFFSET_CAPTURE ) ? (int) $m[0][1] : false;
 	return false === $pos ? $content . $row : substr( $content, 0, $pos ) . $row . substr( $content, $pos );
 }
 add_filter( 'the_content', 'dancingspoon_share_placement', 20 );
