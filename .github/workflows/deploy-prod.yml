@@ -18,9 +18,8 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: deploy-prod
-  cancel-in-progress: false
+# no workflow-level concurrency here: the reusable deploy job already serialises on
+# the group deploy-<environment>, and a second claim on the same group kills the job at queue time
 
 jobs:
   fetch:
