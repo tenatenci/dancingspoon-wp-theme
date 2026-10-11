@@ -22,7 +22,7 @@ $tiles = array(
 		<h2 class="wp-block-heading"><?php esc_html_e( 'Browse by category', 'dancingspoon' ); ?></h2>
 		<!-- /wp:heading -->
 		<!-- wp:paragraph -->
-		<p><a href="<?php echo esc_url( home_url( '/category/dinner/' ) ); ?>"><?php esc_html_e( 'All recipes →', 'dancingspoon' ); ?></a></p>
+		<p><a href="<?php echo esc_url( home_url( '/recipes/' ) ); ?>"><?php esc_html_e( 'All recipes →', 'dancingspoon' ); ?></a></p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

@@ -14,6 +14,9 @@
 		<!-- wp:heading {"level":2} -->
 		<h2 class="wp-block-heading"><?php esc_html_e( 'Latest recipes', 'dancingspoon' ); ?></h2>
 		<!-- /wp:heading -->
+		<!-- wp:paragraph -->
+		<p><a href="<?php echo esc_url( home_url( '/recipes/' ) ); ?>"><?php esc_html_e( 'All recipes →', 'dancingspoon' ); ?></a></p>
+		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->
 	<!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":"exclude"},"align":"wide"} -->

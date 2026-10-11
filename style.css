@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.2.0
+Version: 0.2.1
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -125,3 +125,19 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 @media (max-width: 781px) { .ds-hero .wp-block-post-title { font-size: var(--wp--preset--font-size--x-large); } .ds-header .wp-block-site-logo img { width: 56px; height: 56px; } }
 @media (prefers-reduced-motion: reduce) { .ds-card, .ds-card img, .ds-tiles img { transition: none !important; } }
 @media print { .ds-header, .ds-footer, .wp-block-comments, .wp-block-post-comments-form { display: none !important; } }
+
+/* ---------- 0.2.1 fixes ---------- */
+.ds-hero .wp-block-read-more.wp-element-button, .ds-hero .wp-block-read-more.wp-element-button:hover { color: var(--wp--preset--color--base); display: inline-block; }
+.ds-header .wp-block-search { max-width: 220px; }
+.ds-header .wp-block-search__inside-wrapper { padding: 2px 2px 2px 6px; }
+.ds-header .wp-block-search__input { font-size: var(--wp--preset--font-size--small); min-width: 0; }
+.ds-header .wp-block-search__button { padding: .55rem .9rem; }
+@media (max-width: 600px) {
+	.ds-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+	.ds-tiles .wp-block-cover { min-height: 150px; }
+	.ds-header .wp-block-search { max-width: 150px; }
+}
+.ds-recipes-head { text-align: center; padding: 2rem 0 .5rem; }
+.ds-cat-pills.wp-block-categories-list { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; padding: 0; margin: 0; }
+.ds-cat-pills li a { display: inline-block; background: var(--wp--preset--color--surface); border: 1px solid var(--wp--preset--color--border); border-radius: 999px; padding: .4rem .9rem; font-size: var(--wp--preset--font-size--x-small); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; }
+.ds-cat-pills li a:hover { background: var(--wp--preset--color--primary); color: var(--wp--preset--color--base); border-color: var(--wp--preset--color--primary); }
