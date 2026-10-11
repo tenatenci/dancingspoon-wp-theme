@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.7.5
+Version: 0.8.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -399,3 +399,60 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 /* 0.7.3: postal address on the contact card */
 .ds-contact__post { margin-top: 1rem !important; padding-top: .85rem; border-top: 1px solid var(--wp--preset--color--border); font-size: var(--wp--preset--font-size--small); line-height: 1.5; }
 .ds-contact__post-label { display: block; font-size: var(--wp--preset--font-size--x-small); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--wp--preset--color--accent); margin-bottom: .3rem; }
+
+/* ======================================================================
+   0.8.0 — mobile pass
+   ====================================================================== */
+/* tablets use the overlay menu too: the one-line nav only fits from 1025 px up */
+@media (max-width: 1024px) {
+	.ds-header .wp-block-navigation__responsive-container-open { display: flex !important; }
+	.ds-header .wp-block-navigation__responsive-container:not(.is-menu-open) { display: none !important; }
+	.ds-header .ds-nav { flex: 0 0 auto; order: 3; }
+	.ds-header__tools { order: 2; margin-left: auto; }
+	.ds-header__row { gap: var(--wp--preset--spacing--20); }
+}
+.ds-header .wp-block-navigation__responsive-container.is-menu-open { padding: 5rem var(--wp--preset--spacing--40) var(--wp--preset--spacing--40); }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container { gap: 1.25rem; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content { font-family: var(--wp--preset--font-family--heading); font-size: 1.75rem; letter-spacing: 0; text-transform: none; }
+
+/* grids: two columns on tablets, one on phones */
+@media (max-width: 1024px) and (min-width: 601px) {
+	.wp-block-post-template.is-layout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+	.ds-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 600px) {
+	.wp-block-post-template.is-layout-grid { grid-template-columns: 1fr !important; }
+}
+
+/* carousel: on small screens the track bleeds to the screen edges and the first card starts at the gutter */
+@media (max-width: 1024px) {
+	.ds-carousel .wp-block-post-template.ds-carousel__track {
+		margin-left: calc(-1 * var(--wp--style--root--padding-left, 1rem));
+		margin-right: calc(-1 * var(--wp--style--root--padding-right, 1rem));
+		padding-left: var(--wp--style--root--padding-left, 1rem);
+		padding-right: var(--wp--style--root--padding-right, 1rem);
+		scroll-padding-left: var(--wp--style--root--padding-left, 1rem);
+	}
+}
+@media (max-width: 600px) {
+	.ds-carousel .ds-carousel__track > li { flex-basis: 84%; }
+	.ds-carousel .ds-section-head { flex-wrap: wrap; }
+}
+
+/* recipe card on phones: the section jump buttons wrap instead of overflowing */
+.wprm-recipe-container .wprm-recipe-jump-to-section-container { flex-wrap: wrap !important; justify-content: center !important; gap: .6rem !important; overflow: visible !important; mask-image: none !important; -webkit-mask-image: none !important; }
+@media (max-width: 600px) {
+	.wprm-recipe-container { padding: 1rem !important; }
+	.wprm-recipe-container .wprm-recipe-name { font-size: var(--wp--preset--font-size--large) !important; }
+	.entry-content .wprm-recipe-container { margin-left: calc(-1 * var(--wp--style--root--padding-left, 1rem) + .5rem); margin-right: calc(-1 * var(--wp--style--root--padding-right, 1rem) + .5rem); }
+}
+
+/* phones: hero and section rhythm a little tighter, buttons full width where they stack */
+@media (max-width: 600px) {
+	.ds-hero__copy { padding: 1.25rem 1.25rem 1.5rem; }
+	.ds-hero .wp-block-post-title { font-size: 1.9rem; }
+	main > .wp-block-group.ds-section { margin-top: 2.5rem !important; }
+	.ds-single-actions .wp-block-shortcode { display: inline-block; }
+	.ds-contact__lede { font-size: 1.3rem; }
+	.ds-footer .ds-brand--footer .ds-brand__mark { width: 56px; height: 56px; }
+}
