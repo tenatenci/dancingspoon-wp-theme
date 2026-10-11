@@ -1,0 +1,111 @@
+# Reusable deploy: WireGuard into the estate, kubectl cp + exec into the WordPress pod,
+# WP-CLI install/activate, smoke test with automatic deactivate on failure.
+# Every address, name and secret comes from the GitHub Environment (dev | prod).
+name: deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      artifact:
+        required: true
+        type: string
+      zip:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    concurrency:
+      group: deploy-${{ inputs.environment }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+
+      - name: WP-CLI (pinned, checksum verified)
+        env:
+          WP_CLI_VERSION: ${{ vars.WP_CLI_VERSION }}
+        run: |
+          set -euo pipefail
+          BASE="https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}"
+          curl -fsSLo wp-cli.phar "$BASE/wp-cli-${WP_CLI_VERSION}.phar"
+          curl -fsSLo wp-cli.phar.sha512 "$BASE/wp-cli-${WP_CLI_VERSION}.phar.sha512"
+          echo "$(cat wp-cli.phar.sha512)  wp-cli.phar" | sha512sum -c -
+
+      - name: Connect to the estate (WireGuard peer github-actions)
+        env:
+          WG_PRIVATE_KEY: ${{ secrets.WG_PRIVATE_KEY }}
+          WG_ADDRESS: ${{ vars.WG_ADDRESS }}
+          WG_ENDPOINT: ${{ vars.WG_ENDPOINT }}
+          WG_GATEWAY_PUBLIC_KEY: ${{ vars.WG_GATEWAY_PUBLIC_KEY }}
+          WG_ALLOWED_IPS: ${{ vars.WG_ALLOWED_IPS }}
+          KUBE_API_HOST: ${{ vars.KUBE_API_HOST }}
+          KUBE_API_IP: ${{ vars.KUBE_API_IP }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq wireguard-tools >/dev/null
+          umask 077
+          cat > "$RUNNER_TEMP/wg0.conf" <<CONF
+          [Interface]
+          PrivateKey = $WG_PRIVATE_KEY
+          Address = $WG_ADDRESS/32
+          MTU = 1340
+
+          [Peer]
+          PublicKey = $WG_GATEWAY_PUBLIC_KEY
+          Endpoint = $WG_ENDPOINT
+          AllowedIPs = $WG_ALLOWED_IPS
+          PersistentKeepalive = 25
+          CONF
+          sudo install -m 600 "$RUNNER_TEMP/wg0.conf" /etc/wireguard/wg0.conf
+          sudo wg-quick up wg0
+          echo "$KUBE_API_IP $KUBE_API_HOST" | sudo tee -a /etc/hosts >/dev/null
+          # the API is the proof the tunnel works end to end (handshake alone proves only the first hop)
+          for i in $(seq 1 15); do
+            if timeout 3 bash -c "exec 3<>/dev/tcp/$KUBE_API_IP/6443" 2>/dev/null; then echo "kube API reachable"; break; fi
+            [ "$i" -lt 15 ] || { echo "kube API $KUBE_API_IP:6443 unreachable through the tunnel"; sudo wg show; exit 1; }
+            sleep 2
+          done
+
+      - name: Kubeconfig (user-generator identity)
+        env:
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          set -euo pipefail
+          umask 077
+          echo "$KUBECONFIG_B64" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+          kubectl auth whoami
+
+      - name: Install and activate
+        env:
+          WP_KIND: ${{ vars.WP_KIND }}
+          WP_SLUG: ${{ vars.WP_SLUG }}
+          WP_VERSION: ${{ inputs.version }}
+          WP_ZIP: ${{ inputs.zip }}
+          KUBE_NAMESPACE: ${{ vars.KUBE_NAMESPACE }}
+          WP_RELEASE: ${{ vars.WP_RELEASE }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_RESOLVE: ${{ vars.SITE_RESOLVE }}
+        run: bash .github/scripts/wp-deploy.sh
+
+      - name: Disconnect
+        if: always()
+        run: sudo wg-quick down wg0 2>/dev/null || true

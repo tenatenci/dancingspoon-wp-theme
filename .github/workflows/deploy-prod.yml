@@ -1,0 +1,52 @@
+# Manual, release-pinned prod deploy. The `prod` GitHub Environment carries the required
+# reviewers, so "Run workflow" is the trigger and the approval is the gate.
+name: deploy-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "GitHub Release tag to deploy (vX.Y.Z)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-24.04
+    outputs:
+      zip: ${{ steps.dl.outputs.zip }}
+      version: ${{ steps.dl.outputs.version }}
+    steps:
+      - name: Download the release asset
+        id: dl
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir .
+          ZIP=$(ls *.zip | head -1)
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: ${{ steps.dl.outputs.zip }}
+          retention-days: 7
+
+  deploy-prod:
+    needs: fetch
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: prod
+      artifact: package
+      zip: ${{ needs.fetch.outputs.zip }}
+      version: ${{ needs.fetch.outputs.version }}
+    secrets: inherit

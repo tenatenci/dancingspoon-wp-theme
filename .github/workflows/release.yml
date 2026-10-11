@@ -1,0 +1,100 @@
+# Push to main: lint, build the package, cut a GitHub Release when the version is new,
+# deploy to dev. Prod is deploy-prod.yml (manual, release-pinned).
+name: release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-main
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      zip: ${{ steps.meta.outputs.zip }}
+      released: ${{ steps.release.outputs.released }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Lint (php -l on every file)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq >/dev/null && sudo apt-get install -y -qq php-cli >/dev/null
+          find . -path ./vendor -prune -o -path ./node_modules -prune -o -name '*.php' -print0 \
+            | xargs -0 -n1 php -l >/dev/null
+          echo "php -l: clean"
+
+      - name: Read the package version from the header
+        id: meta
+        env:
+          SLUG: ${{ vars.WP_SLUG }}
+          KIND: ${{ vars.WP_KIND }}
+        run: |
+          set -euo pipefail
+          case "$KIND" in
+            plugin) HEADER_FILE="$SLUG.php" ;;
+            theme)  HEADER_FILE="style.css" ;;
+            *) echo "WP_KIND must be plugin or theme"; exit 1 ;;
+          esac
+          VERSION=$(grep -m1 -iE '^\s*\*?\s*Version:' "$HEADER_FILE" | sed -E 's/.*Version:\s*//; s/\s+$//')
+          [ -n "$VERSION" ] || { echo "no Version: header in $HEADER_FILE"; exit 1; }
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "zip=$SLUG-$VERSION.zip" >> "$GITHUB_OUTPUT"
+          echo "$KIND $SLUG $VERSION"
+
+      - name: Build the package (git archive, export-ignore honoured)
+        env:
+          SLUG: ${{ vars.WP_SLUG }}
+          ZIP: ${{ steps.meta.outputs.zip }}
+        run: |
+          set -euo pipefail
+          if [ -f composer.json ]; then
+            composer install --no-dev --prefer-dist --no-interaction --no-progress
+            rm -f "$ZIP"; zip -qr "$ZIP" . -x '.git/*' '.github/*' 'tests/*' 'phpunit.xml*' '.gitattributes' '.gitignore' 'composer.lock'
+            # zip has no --prefix: re-pack under <slug>/ so WordPress gets one top-level directory
+            mkdir -p /tmp/pack/"$SLUG" && unzip -qo "$ZIP" -d /tmp/pack/"$SLUG" && rm -f "$ZIP" && (cd /tmp/pack && zip -qr "$GITHUB_WORKSPACE/$ZIP" "$SLUG")
+          else
+            git archive --format=zip --prefix="$SLUG/" -o "$ZIP" HEAD
+          fi
+          unzip -l "$ZIP" | head -20
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: package
+          path: ${{ steps.meta.outputs.zip }}
+          retention-days: 14
+
+      - name: GitHub Release (only when the tag does not exist yet)
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          ZIP: ${{ steps.meta.outputs.zip }}
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "release v$VERSION exists - not re-cut (bump the Version: header to release)"
+            echo "released=false" >> "$GITHUB_OUTPUT"
+          else
+            gh release create "v$VERSION" "$ZIP" --title "v$VERSION" --generate-notes
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy-dev:
+    needs: build
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: dev
+      artifact: package
+      zip: ${{ needs.build.outputs.zip }}
+      version: ${{ needs.build.outputs.version }}
+    secrets: inherit
