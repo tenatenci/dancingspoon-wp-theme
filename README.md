@@ -14,4 +14,5 @@ after the `prod` environment's reviewers approve.
 
 `assets/brand/` holds the logo for social profiles (not shipped in the theme zip): the mark as
 self-contained SVG (fonts embedded) in plum and cream, square avatars 1024/512 px on cream and on plum,
-and transparent PNGs of the mark in both colours. Source of truth is `assets/images/logo.svg`.
+transparent PNGs of the mark in both colours, and 512 px GIFs of the spoon spinning (plum on cream,
+cream on plum). Source of truth is `assets/images/logo.svg`.
