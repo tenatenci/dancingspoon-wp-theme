@@ -11,7 +11,10 @@ set -euo pipefail
 K="kubectl -n $KUBE_NAMESPACE"
 WP_PATH=/var/www/html
 # WP-CLI runs as www-data so the files it writes stay editable by WordPress itself.
-WP="runuser -u www-data -- env HOME=/tmp WP_CLI_CACHE_DIR=/tmp/wp-cli-cache php /tmp/wp-cli.phar --path=$WP_PATH"
+# WP-CLI runs inside the serving pod, so keep it small: a PHP memory cap, and for a theme no plugins or
+# themes loaded (a 1 GiB pod with 15 plugins was OOM-killed by an install on 2026-10-11).
+skip=""; [ "$WP_KIND" = theme ] && skip="--skip-plugins --skip-themes"
+WP="runuser -u www-data -- env HOME=/tmp WP_CLI_CACHE_DIR=/tmp/wp-cli-cache php -d memory_limit=192M /tmp/wp-cli.phar --path=$WP_PATH $skip"
 
 pod=$($K get pod -l "app.kubernetes.io/instance=$WP_RELEASE,app.kubernetes.io/component=wordpress" \
       -o jsonpath='{range .items[?(@.status.phase=="Running")]}{.metadata.name}{"\n"}{end}' | head -1)
