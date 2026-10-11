@@ -445,9 +445,9 @@ function dancingspoon_mail_notice(): void {
 add_action( 'admin_notices', 'dancingspoon_mail_notice' );
 
 /**
- * Most older posts start with the very photo that is also the featured image; the single template already
- * shows that one wide above the text, so the leading copy inside the content is dropped (matched by attachment
- * id, or by file name when the block carries no id).
+ * Most older posts open with the very photo that is also the featured image; the single template already shows
+ * it wide above the text, so that leading copy is dropped. Runs at priority 5, i.e. on raw block markup: leading
+ * spacers and empty paragraphs are skipped, the image is matched by attachment id or, failing that, by file name.
  */
 function dancingspoon_drop_duplicate_hero( string $content ): string {
 	if ( ! is_singular( 'post' ) || ! in_the_loop() || ! is_main_query() ) {
@@ -457,18 +457,20 @@ function dancingspoon_drop_duplicate_hero( string $content ): string {
 	if ( ! $thumb_id ) {
 		return $content;
 	}
-	if ( ! preg_match( '#^\s*(?:<p>\s*)?(<figure[^>]*class="[^"]*wp-block-image[^"]*"[^>]*>.*?</figure>|<img[^>]+>)(?:\s*</p>)?#is', $content, $m ) ) {
+	$lead  = '(?:\s*<!-- wp:spacer\b[^>]*-->.*?<!-- /wp:spacer -->|\s*<!-- wp:paragraph\b[^>]*-->\s*<p[^>]*>\s*</p>\s*<!-- /wp:paragraph -->|\s*<p[^>]*>\s*(?:&nbsp;)?\s*</p>)*\s*';
+	$image = '(<!-- wp:image\b[^>]*-->\s*<figure\b.*?</figure>\s*<!-- /wp:image -->|<figure\b[^>]*class="[^"]*wp-block-image[^"]*"[^>]*>.*?</figure>|<p[^>]*>\s*<img\b[^>]+>\s*</p>|<img\b[^>]+>)';
+	if ( ! preg_match( '#^(' . $lead . ')' . $image . '#is', $content, $m ) ) {
 		return $content;
 	}
-	$block = $m[1];
-	$same  = preg_match( '#wp-image-' . $thumb_id . '\b#', $block );
+	$block = $m[2];
+	$same  = (bool) preg_match( '#(?:"id":' . $thumb_id . '\b|wp-image-' . $thumb_id . '\b)#', $block );
 	if ( ! $same && preg_match( '#src="([^"]+)"#i', $block, $src ) ) {
 		$strip = static function ( string $url ): string {
-			$base = strtolower( pathinfo( wp_parse_url( $url, PHP_URL_PATH ) ?: '', PATHINFO_FILENAME ) );
-			return preg_replace( '#(-\d+x\d+|-scaled)$#', '', $base );
+			$base = strtolower( pathinfo( (string) wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_FILENAME ) );
+			return (string) preg_replace( '#(-\d+x\d+|-scaled)$#', '', $base );
 		};
 		$same = $strip( $src[1] ) === $strip( (string) wp_get_attachment_url( $thumb_id ) );
 	}
-	return $same ? substr( $content, strlen( $m[0] ) ) : $content;
+	return $same ? $m[1] . substr( $content, strlen( $m[0] ) ) : $content;
 }
 add_filter( 'the_content', 'dancingspoon_drop_duplicate_hero', 5 );
