@@ -34,10 +34,16 @@ if [ "$WP_KIND" = theme ]; then
   echo "active theme before: ${prev_theme:-none}"
 fi
 
-$K exec "$pod" -c app -- sh -c "$WP $WP_KIND install /tmp/$WP_SLUG.zip --force --activate && rm -f /tmp/$WP_SLUG.zip"
+activate="--activate"; [ "${WP_ACTIVATE:-true}" = "true" ] || activate=""
+$K exec "$pod" -c app -- sh -c "$WP $WP_KIND install /tmp/$WP_SLUG.zip --force $activate && rm -f /tmp/$WP_SLUG.zip"
 
 after=$($K exec "$pod" -c app -- sh -c "$WP $WP_KIND get $WP_SLUG --field=version")
 [ "$after" = "$WP_VERSION" ] || { echo "installed version $after != $WP_VERSION"; exit 1; }
+
+if [ -z "$activate" ]; then
+  echo "$WP_KIND $WP_SLUG $after installed, not activated (WP_ACTIVATE=false); active theme stays ${prev_theme:-unchanged}"
+  exit 0
+fi
 
 # Smoke: the site must still answer 200 with the package active. A fatal takes it down,
 # so a failed smoke deactivates the plugin or re-activates the theme that was live before.

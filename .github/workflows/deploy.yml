@@ -18,6 +18,11 @@ on:
       version:
         required: true
         type: string
+      activate:
+        description: "Activate after install (false = install only; switch later with a second run)"
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -115,6 +120,7 @@ jobs:
           WP_RELEASE: ${{ vars.WP_RELEASE }}
           SITE_URL: ${{ vars.SITE_URL }}
           SITE_RESOLVE: ${{ vars.SITE_RESOLVE }}
+          WP_ACTIVATE: ${{ inputs.activate }}
         run: bash .github/scripts/wp-deploy.sh
 
       - name: Disconnect

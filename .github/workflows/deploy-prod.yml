@@ -9,6 +9,11 @@ on:
         description: "GitHub Release tag to deploy (vX.Y.Z)"
         required: true
         type: string
+      activate:
+        description: "Activate after install (untick to install only and switch later)"
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -49,4 +54,5 @@ jobs:
       artifact: package
       zip: ${{ needs.fetch.outputs.zip }}
       version: ${{ needs.fetch.outputs.version }}
+      activate: ${{ inputs.activate }}
     secrets: inherit
