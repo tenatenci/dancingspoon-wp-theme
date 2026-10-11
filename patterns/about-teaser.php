@@ -15,7 +15,7 @@
 	<h2 class="wp-block-heading has-text-align-center"><?php esc_html_e( 'Simple recipes that look impressive', 'dancingspoon' ); ?></h2>
 	<!-- /wp:heading -->
 	<!-- wp:paragraph {"align":"center"} -->
-	<p class="has-text-align-center"><?php esc_html_e( 'A self-taught cook and baker. European classics with a Croatian touch, every recipe tested until it works on a weeknight.', 'dancingspoon' ); ?></p>
+	<p class="has-text-align-center"><?php esc_html_e( 'A self-taught cook and baker. European classics with a Croatian accent, every recipe tested until it works on a weeknight.', 'dancingspoon' ); ?></p>
 	<!-- /wp:paragraph -->
 	<!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
 	<div class="wp-block-buttons">
