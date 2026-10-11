@@ -331,3 +331,47 @@ function dancingspoon_footer_code(): void {
 	}
 }
 add_action( 'wp_footer', 'dancingspoon_footer_code', 50 );
+
+/**
+ * Site identity for the legal pages and the contact page (Appearance → Customize → Dancing Spoon identity).
+ */
+function dancingspoon_customize_identity( WP_Customize_Manager $wp_customize ): void {
+	$wp_customize->add_section(
+		'dancingspoon_identity',
+		array( 'title' => __( 'Dancing Spoon identity', 'dancingspoon' ), 'priority' => 32, 'description' => __( 'Used by the Imprint, the privacy policy and the contact page. German law (§ 5 DDG, § 18 MStV) needs a real name and a postal address.', 'dancingspoon' ) )
+	);
+	$fields = array(
+		'owner_name'  => array( __( 'Responsible person (full name)', 'dancingspoon' ), 'text' ),
+		'address'     => array( __( 'Postal address (street, postcode, city)', 'dancingspoon' ), 'textarea' ),
+		'email'       => array( __( 'Contact e-mail', 'dancingspoon' ), 'email' ),
+		'phone'       => array( __( 'Phone (optional)', 'dancingspoon' ), 'text' ),
+		'authority'   => array( __( 'Data protection authority for your state (name + URL, optional)', 'dancingspoon' ), 'text' ),
+		'log_days'    => array( __( 'Server log retention in days', 'dancingspoon' ), 'number' ),
+	);
+	foreach ( $fields as $key => $def ) {
+		list( $label, $type ) = $def;
+		$wp_customize->add_setting( 'dancingspoon_id_' . $key, array( 'default' => 'log_days' === $key ? 30 : '', 'sanitize_callback' => 'textarea' === $type ? 'sanitize_textarea_field' : ( 'number' === $type ? 'absint' : 'sanitize_text_field' ) ) );
+		$wp_customize->add_control( 'dancingspoon_id_' . $key, array( 'section' => 'dancingspoon_identity', 'label' => $label, 'type' => $type ) );
+	}
+}
+add_action( 'customize_register', 'dancingspoon_customize_identity' );
+
+/**
+ * One identity value, or a visible placeholder so an unfilled legal page is never silently wrong.
+ */
+function dancingspoon_identity( string $key, bool $html = true ): string {
+	$value = (string) get_theme_mod( 'dancingspoon_id_' . $key, '' );
+	if ( '' === trim( $value ) ) {
+		$labels = array(
+			'owner_name' => __( 'full name', 'dancingspoon' ),
+			'address'    => __( 'street, postcode, city', 'dancingspoon' ),
+			'email'      => __( 'e-mail address', 'dancingspoon' ),
+			'phone'      => __( 'phone', 'dancingspoon' ),
+			'authority'  => __( 'data protection authority', 'dancingspoon' ),
+			'log_days'   => '30',
+		);
+		$value = '[' . ( $labels[ $key ] ?? $key ) . ' — ' . __( 'set in Customize → Dancing Spoon identity', 'dancingspoon' ) . ']';
+		return $html ? '<mark class="ds-todo">' . esc_html( $value ) . '</mark>' : $value;
+	}
+	return $html ? nl2br( esc_html( $value ) ) : $value;
+}
