@@ -4,7 +4,7 @@
  * Slug: dancingspoon/hero
  * Categories: dancingspoon
  * Block Types: core/query
- * Description: The newest post as a split hero: photo left, kicker, title, excerpt and a button right.
+ * Description: The recipe of the month (or the newest / a random one) as a split hero: photo left, kicker, title, excerpt and a button right.
  */
 ?>
 <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":""},"align":"wide","className":"ds-hero-query"} -->
@@ -22,7 +22,7 @@
 				<!-- wp:column {"verticalAlignment":"center","width":"42%","className":"ds-hero__copy"} -->
 				<div class="wp-block-column is-vertically-aligned-center ds-hero__copy" style="flex-basis:42%">
 					<!-- wp:paragraph {"className":"ds-kicker"} -->
-					<p class="ds-kicker"><?php esc_html_e( 'Fresh from the kitchen', 'dancingspoon' ); ?></p>
+					<p class="ds-kicker"><?php echo esc_html( dancingspoon_hero_kicker() ); ?></p>
 					<!-- /wp:paragraph -->
 					<!-- wp:post-terms {"term":"category","className":"is-style-pill"} /-->
 					<!-- wp:post-title {"level":1,"isLink":true} /-->

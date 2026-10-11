@@ -93,14 +93,34 @@ function dancingspoon_customize( WP_Customize_Manager $wp_customize ): void {
 		array( 'title' => __( 'Dancing Spoon front page', 'dancingspoon' ), 'priority' => 30 )
 	);
 	$mode = fn( $v ) => in_array( $v, array( 'latest', 'random' ), true ) ? $v : 'latest';
-	$wp_customize->add_setting( 'dancingspoon_hero_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
+	$hero_mode = fn( $v ) => in_array( $v, array( 'month', 'latest', 'random' ), true ) ? $v : 'month';
+	$wp_customize->add_setting( 'dancingspoon_hero_mode', array( 'default' => 'month', 'sanitize_callback' => $hero_mode ) );
 	$wp_customize->add_control(
 		'dancingspoon_hero_mode',
 		array(
+			'section'     => 'dancingspoon_front',
+			'label'       => __( 'Top card shows', 'dancingspoon' ),
+			'description' => __( 'Recipe of the month falls back to the newest recipe until one is chosen below.', 'dancingspoon' ),
+			'type'        => 'select',
+			'choices'     => array(
+				'month'  => __( 'Recipe of the month (chosen below)', 'dancingspoon' ),
+				'latest' => __( 'The newest recipe', 'dancingspoon' ),
+				'random' => __( 'A random recipe', 'dancingspoon' ),
+			),
+		)
+	);
+	$choices = array( 0 => __( '— none chosen —', 'dancingspoon' ) );
+	foreach ( get_posts( array( 'post_type' => 'post', 'post_status' => 'publish', 'posts_per_page' => 200, 'orderby' => 'title', 'order' => 'ASC' ) ) as $post_item ) {
+		$choices[ $post_item->ID ] = $post_item->post_title;
+	}
+	$wp_customize->add_setting( 'dancingspoon_hero_post', array( 'default' => 0, 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control(
+		'dancingspoon_hero_post',
+		array(
 			'section' => 'dancingspoon_front',
-			'label'   => __( 'Top card shows', 'dancingspoon' ),
+			'label'   => __( 'Recipe of the month', 'dancingspoon' ),
 			'type'    => 'select',
-			'choices' => array( 'latest' => __( 'The newest recipe', 'dancingspoon' ), 'random' => __( 'A random recipe', 'dancingspoon' ) ),
+			'choices' => $choices,
 		)
 	);
 	$wp_customize->add_setting( 'dancingspoon_grid_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
@@ -166,12 +186,16 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	if ( ! in_array( $query_id, array( 1, 2, 8 ), true ) || ! ( is_home() || is_front_page() ) ) {
 		return $query;
 	}
-	$hero_mode  = get_theme_mod( 'dancingspoon_hero_mode', 'latest' );
+	$hero_mode  = get_theme_mod( 'dancingspoon_hero_mode', 'month' );
+	$hero_post  = (int) get_theme_mod( 'dancingspoon_hero_post', 0 );
+	if ( 'month' === $hero_mode && ( ! $hero_post || 'publish' !== get_post_status( $hero_post ) ) ) {
+		$hero_mode = 'latest';   // nothing chosen (or it was unpublished): the newest recipe stands in
+	}
 	$grid_mode  = get_theme_mod( 'dancingspoon_grid_mode', 'latest' );
 	$grid_count = (int) get_theme_mod( 'dancingspoon_grid_count', 6 );
 
 	if ( 1 === $query_id ) {
-		$pick = get_posts(
+		$pick = 'month' === $hero_mode ? array( $hero_post ) : get_posts(
 			array(
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
@@ -224,3 +248,15 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	return $query;
 }
 add_filter( 'query_loop_block_query_vars', 'dancingspoon_front_queries', 10, 2 );
+
+/**
+ * The hero kicker, in step with the Customizer choice.
+ */
+function dancingspoon_hero_kicker(): string {
+	$mode = get_theme_mod( 'dancingspoon_hero_mode', 'month' );
+	$post = (int) get_theme_mod( 'dancingspoon_hero_post', 0 );
+	if ( 'month' === $mode && $post && 'publish' === get_post_status( $post ) ) {
+		return __( 'Recipe of the month', 'dancingspoon' );
+	}
+	return 'random' === $mode ? __( 'Try this one', 'dancingspoon' ) : __( 'Fresh from the kitchen', 'dancingspoon' );
+}
