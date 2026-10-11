@@ -30,12 +30,12 @@ jobs:
       group: deploy-${{ inputs.environment }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           sparse-checkout: .github/scripts
           sparse-checkout-cone-mode: false
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.artifact }}
 
@@ -48,6 +48,16 @@ jobs:
           curl -fsSLo wp-cli.phar "$BASE/wp-cli-${WP_CLI_VERSION}.phar"
           curl -fsSLo wp-cli.phar.sha512 "$BASE/wp-cli-${WP_CLI_VERSION}.phar.sha512"
           echo "$(cat wp-cli.phar.sha512)  wp-cli.phar" | sha512sum -c -
+
+      - name: Environment secrets present
+        env:
+          WG_PRIVATE_KEY: ${{ secrets.WG_PRIVATE_KEY }}
+          KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+        run: |
+          ok=1
+          [ -n "$WG_PRIVATE_KEY" ] || { echo "::error::secret WG_PRIVATE_KEY is not set on environment ${{ inputs.environment }}"; ok=0; }
+          [ -n "$KUBECONFIG_B64" ] || { echo "::error::secret KUBECONFIG_B64 is not set on environment ${{ inputs.environment }}"; ok=0; }
+          [ "$ok" = 1 ]
 
       - name: Connect to the estate (WireGuard peer github-actions)
         env:
