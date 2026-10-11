@@ -260,3 +260,74 @@ function dancingspoon_hero_kicker(): string {
 	}
 	return 'random' === $mode ? __( 'Try this one', 'dancingspoon' ) : __( 'Fresh from the kitchen', 'dancingspoon' );
 }
+
+/**
+ * Analytics and extra head/footer code (Appearance → Customize → Dancing Spoon analytics).
+ * Rybbit is the house analytics (analytics.utrlabs.com); the raw boxes take anything else
+ * that has to be pasted (cookie banner, verification tags). Admin-only settings, output verbatim.
+ */
+function dancingspoon_customize_analytics( WP_Customize_Manager $wp_customize ): void {
+	$wp_customize->add_section(
+		'dancingspoon_analytics',
+		array( 'title' => __( 'Dancing Spoon analytics', 'dancingspoon' ), 'priority' => 31 )
+	);
+	$wp_customize->add_setting( 'dancingspoon_rybbit_script', array( 'default' => 'https://analytics.utrlabs.com/api/script.js', 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control(
+		'dancingspoon_rybbit_script',
+		array( 'section' => 'dancingspoon_analytics', 'label' => __( 'Rybbit script URL', 'dancingspoon' ), 'type' => 'url' )
+	);
+	$wp_customize->add_setting( 'dancingspoon_rybbit_site_id', array( 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ) );
+	$wp_customize->add_control(
+		'dancingspoon_rybbit_site_id',
+		array(
+			'section'     => 'dancingspoon_analytics',
+			'label'       => __( 'Rybbit site ID', 'dancingspoon' ),
+			'description' => __( 'From the site\'s tracking snippet in Rybbit (data-site-id). Empty = no tracking.', 'dancingspoon' ),
+			'type'        => 'text',
+		)
+	);
+	$wp_customize->add_setting( 'dancingspoon_rybbit_skip_logged_in', array( 'default' => true, 'sanitize_callback' => fn( $v ) => (bool) $v ) );
+	$wp_customize->add_control(
+		'dancingspoon_rybbit_skip_logged_in',
+		array( 'section' => 'dancingspoon_analytics', 'label' => __( 'Do not track logged-in users', 'dancingspoon' ), 'type' => 'checkbox' )
+	);
+	$raw = fn( $v ) => current_user_can( 'unfiltered_html' ) ? (string) $v : '';
+	$wp_customize->add_setting( 'dancingspoon_head_code', array( 'default' => '', 'sanitize_callback' => $raw ) );
+	$wp_customize->add_control(
+		'dancingspoon_head_code',
+		array(
+			'section'     => 'dancingspoon_analytics',
+			'label'       => __( 'Extra code in <head>', 'dancingspoon' ),
+			'description' => __( 'Pasted verbatim before </head>: cookie banner, site verification, other analytics.', 'dancingspoon' ),
+			'type'        => 'textarea',
+		)
+	);
+	$wp_customize->add_setting( 'dancingspoon_footer_code', array( 'default' => '', 'sanitize_callback' => $raw ) );
+	$wp_customize->add_control(
+		'dancingspoon_footer_code',
+		array( 'section' => 'dancingspoon_analytics', 'label' => __( 'Extra code before </body>', 'dancingspoon' ), 'type' => 'textarea' )
+	);
+}
+add_action( 'customize_register', 'dancingspoon_customize_analytics' );
+
+function dancingspoon_head_code(): void {
+	$site_id = trim( (string) get_theme_mod( 'dancingspoon_rybbit_site_id', '' ) );
+	$script  = (string) get_theme_mod( 'dancingspoon_rybbit_script', 'https://analytics.utrlabs.com/api/script.js' );
+	$skip    = get_theme_mod( 'dancingspoon_rybbit_skip_logged_in', true ) && is_user_logged_in();
+	if ( '' !== $site_id && '' !== $script && ! $skip && ! is_customize_preview() ) {
+		printf( "<script src=\"%s\" data-site-id=\"%s\" defer></script>\n", esc_url( $script ), esc_attr( $site_id ) );
+	}
+	$extra = (string) get_theme_mod( 'dancingspoon_head_code', '' );
+	if ( '' !== trim( $extra ) ) {
+		echo $extra . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput -- admin-authored snippet, by design
+	}
+}
+add_action( 'wp_head', 'dancingspoon_head_code', 20 );
+
+function dancingspoon_footer_code(): void {
+	$extra = (string) get_theme_mod( 'dancingspoon_footer_code', '' );
+	if ( '' !== trim( $extra ) ) {
+		echo $extra . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput -- admin-authored snippet, by design
+	}
+}
+add_action( 'wp_footer', 'dancingspoon_footer_code', 50 );
