@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.8.3
+Version: 0.8.4
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -468,3 +468,8 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 
 /* 0.8.2: business address under the Work-with-me action */
 .ds-contact__meta { font-size: var(--wp--preset--font-size--small); color: var(--wp--preset--color--muted); margin-top: .35rem !important; word-break: break-all; }
+
+/* 0.8.4: mailto fallback on the contact page */
+.ds-contact__fallback { display: block; margin-top: .5rem; font-size: var(--wp--preset--font-size--small); color: var(--wp--preset--color--muted); }
+.ds-contact__copy { font: inherit; font-weight: 600; color: var(--wp--preset--color--primary); background: var(--wp--preset--color--sand); border: 1px solid var(--wp--preset--color--border); border-radius: 999px; padding: .15rem .7rem; cursor: pointer; }
+.ds-contact__copy:disabled { opacity: .7; cursor: default; }

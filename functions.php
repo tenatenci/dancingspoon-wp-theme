@@ -38,6 +38,9 @@ add_action( 'wp_enqueue_scripts', 'dancingspoon_styles' );
  * Carousel behaviour (front page only).
  */
 function dancingspoon_scripts(): void {
+	if ( is_page() ) {
+		wp_enqueue_script( 'dancingspoon-contact', get_theme_file_uri( 'assets/js/contact.js' ), array(), wp_get_theme()->get( 'Version' ), true );
+	}
 	if ( is_home() || is_front_page() ) {
 		wp_enqueue_script( 'dancingspoon-carousel', get_theme_file_uri( 'assets/js/carousel.js' ), array(), DANCINGSPOON_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
