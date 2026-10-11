@@ -72,3 +72,100 @@ add_filter(
  * are overridden in style.css) and keep the jump-to-recipe button in the theme's voice.
  */
 add_filter( 'wprm_recipe_jump_text', fn() => __( 'Jump to recipe', 'dancingspoon' ) );
+
+/**
+ * Front page options (Appearance → Customize → Dancing Spoon front page).
+ * The hero is query 1 and the recipe grid query 2 in patterns/hero.php and patterns/latest-grid.php.
+ */
+function dancingspoon_customize( WP_Customize_Manager $wp_customize ): void {
+	$wp_customize->add_section(
+		'dancingspoon_front',
+		array( 'title' => __( 'Dancing Spoon front page', 'dancingspoon' ), 'priority' => 30 )
+	);
+	$mode = fn( $v ) => in_array( $v, array( 'latest', 'random' ), true ) ? $v : 'latest';
+	$wp_customize->add_setting( 'dancingspoon_hero_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
+	$wp_customize->add_control(
+		'dancingspoon_hero_mode',
+		array(
+			'section' => 'dancingspoon_front',
+			'label'   => __( 'Top card shows', 'dancingspoon' ),
+			'type'    => 'select',
+			'choices' => array( 'latest' => __( 'The newest recipe', 'dancingspoon' ), 'random' => __( 'A random recipe', 'dancingspoon' ) ),
+		)
+	);
+	$wp_customize->add_setting( 'dancingspoon_grid_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
+	$wp_customize->add_control(
+		'dancingspoon_grid_mode',
+		array(
+			'section' => 'dancingspoon_front',
+			'label'   => __( 'Recipe grid shows', 'dancingspoon' ),
+			'type'    => 'select',
+			'choices' => array( 'latest' => __( 'The latest recipes', 'dancingspoon' ), 'random' => __( 'Random recipes', 'dancingspoon' ) ),
+		)
+	);
+	$wp_customize->add_setting(
+		'dancingspoon_grid_count',
+		array( 'default' => 6, 'sanitize_callback' => fn( $v ) => in_array( (int) $v, array( 3, 6, 9 ), true ) ? (int) $v : 6 )
+	);
+	$wp_customize->add_control(
+		'dancingspoon_grid_count',
+		array(
+			'section' => 'dancingspoon_front',
+			'label'   => __( 'Recipes in the grid', 'dancingspoon' ),
+			'type'    => 'select',
+			'choices' => array( 3 => '3', 6 => '6', 9 => '9' ),
+		)
+	);
+}
+add_action( 'customize_register', 'dancingspoon_customize' );
+
+/**
+ * Apply the options to the two front-page queries. The grid never repeats the hero's post.
+ */
+function dancingspoon_front_queries( array $query, WP_Block $block ): array {
+	static $hero_id = 0;
+	$query_id = (int) ( $block->context['queryId'] ?? 0 );
+	if ( ! in_array( $query_id, array( 1, 2 ), true ) || ! ( is_home() || is_front_page() ) ) {
+		return $query;
+	}
+	$hero_mode  = get_theme_mod( 'dancingspoon_hero_mode', 'latest' );
+	$grid_mode  = get_theme_mod( 'dancingspoon_grid_mode', 'latest' );
+	$grid_count = (int) get_theme_mod( 'dancingspoon_grid_count', 6 );
+
+	if ( 1 === $query_id ) {
+		$pick = get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'orderby'        => 'random' === $hero_mode ? 'rand' : 'date',
+				'order'          => 'DESC',
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		$hero_id = (int) ( $pick[0] ?? 0 );
+		if ( $hero_id ) {
+			$query['post__in'] = array( $hero_id );
+			$query['offset']   = 0;
+			$query['orderby']  = 'post__in';
+		}
+		return $query;
+	}
+
+	// query 2: the grid
+	$query['posts_per_page'] = $grid_count;
+	$query['offset']         = 0;
+	if ( $hero_id ) {
+		$query['post__not_in'] = array( $hero_id );
+	}
+	if ( 'random' === $grid_mode ) {
+		$query['orderby'] = 'rand';
+		unset( $query['order'] );
+	} else {
+		$query['orderby'] = 'date';
+		$query['order']   = 'DESC';
+	}
+	return $query;
+}
+add_filter( 'query_loop_block_query_vars', 'dancingspoon_front_queries', 10, 2 );
