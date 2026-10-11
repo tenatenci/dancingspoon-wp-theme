@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.6.3
+Version: 0.6.4
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -341,3 +341,11 @@ main > .wp-block-group.ds-section { margin-top: 3rem !important; }
 	padding: .7rem 1.3rem !important; font-weight: 600 !important; letter-spacing: .08em !important; text-transform: uppercase !important; font-size: .75rem !important; line-height: 1.2 !important; text-decoration: none !important;
 }
 .wprm-recipe-container a.wprm-recipe-pin:hover, .wprm-recipe-container a.wprm-recipe-print:hover { background: var(--wp--preset--color--accent) !important; }
+/* 0.6.4: headings get room to breathe again (the paragraphs and lists stay tight) */
+.entry-content h2.wp-block-heading { margin: 2.4rem 0 .7rem; }
+.entry-content h3.wp-block-heading { margin: 1.8rem 0 .45rem; }
+.entry-content h4.wp-block-heading { margin: 1.4rem 0 .3rem; }
+.entry-content .wp-block-spacer + h2.wp-block-heading { margin-block-start: 1.8rem !important; }
+.entry-content .wp-block-spacer + h3.wp-block-heading { margin-block-start: 1.3rem !important; }
+.entry-content .wp-block-spacer + h4.wp-block-heading { margin-block-start: 1rem !important; }
+.entry-content h2.wp-block-heading + *, .entry-content h3.wp-block-heading + *, .entry-content h4.wp-block-heading + * { margin-block-start: .45rem; }
