@@ -385,3 +385,58 @@ function dancingspoon_identity( string $key, bool $html = true ): string {
 	}
 	return $html ? nl2br( esc_html( $value ) ) : $value;
 }
+
+/**
+ * Outgoing mail. With DS_SMTP_HOST and DS_SMTP_PASS present (container env, a *_FILE secret mount, or
+ * constants in wp-config.php) every wp_mail() — comment notifications, password resets — goes through that
+ * mailbox over authenticated SMTP. Without them WordPress keeps PHP mail(), which the zone's SPF does not cover.
+ */
+function dancingspoon_smtp( string $key, string $default = '' ): string {
+	$name = 'DS_SMTP_' . $key;
+	if ( defined( $name ) ) {
+		return (string) constant( $name );
+	}
+	$value = getenv( $name );
+	if ( false !== $value && '' !== $value ) {
+		return (string) $value;
+	}
+	$file = getenv( $name . '_FILE' );
+	if ( $file && is_readable( $file ) ) {
+		return trim( (string) file_get_contents( $file ) );
+	}
+	return $default;
+}
+
+function dancingspoon_smtp_active(): bool {
+	return '' !== dancingspoon_smtp( 'HOST' ) && '' !== dancingspoon_smtp( 'PASS' );
+}
+
+function dancingspoon_phpmailer_init( $phpmailer ): void {
+	if ( ! dancingspoon_smtp_active() ) {
+		return;
+	}
+	$port = (int) dancingspoon_smtp( 'PORT', '587' );
+	$phpmailer->isSMTP();
+	$phpmailer->Host       = dancingspoon_smtp( 'HOST' );
+	$phpmailer->Port       = $port;
+	$phpmailer->SMTPAuth   = true;
+	$phpmailer->Username   = dancingspoon_smtp( 'USER' );
+	$phpmailer->Password   = dancingspoon_smtp( 'PASS' );
+	$phpmailer->SMTPSecure = 465 === $port ? 'ssl' : 'tls';
+	// The envelope sender must be the authenticated mailbox, so From defaults to the login.
+	$phpmailer->setFrom( dancingspoon_smtp( 'FROM', $phpmailer->Username ), dancingspoon_smtp( 'FROM_NAME', get_bloginfo( 'name' ) ) );
+	$reply = dancingspoon_smtp( 'REPLY_TO', (string) get_theme_mod( 'dancingspoon_id_email', '' ) );
+	if ( '' !== $reply && empty( $phpmailer->getReplyToAddresses() ) ) {
+		$phpmailer->addReplyTo( $reply );
+	}
+}
+add_action( 'phpmailer_init', 'dancingspoon_phpmailer_init' );
+
+function dancingspoon_mail_notice(): void {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( ! $screen || 'dashboard' !== $screen->id || ! current_user_can( 'manage_options' ) || dancingspoon_smtp_active() ) {
+		return;
+	}
+	echo '<div class="notice notice-warning"><p>' . esc_html__( 'Dancing Spoon: outgoing mail (comment notifications, password resets) still uses PHP mail(), which the domain’s SPF record does not authorise. Set DS_SMTP_HOST, DS_SMTP_USER and DS_SMTP_PASS on the container to send through the Hetzner mailbox.', 'dancingspoon' ) . '</p></div>';
+}
+add_action( 'admin_notices', 'dancingspoon_mail_notice' );
