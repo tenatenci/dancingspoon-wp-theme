@@ -353,6 +353,7 @@ function dancingspoon_customize_identity( WP_Customize_Manager $wp_customize ): 
 		'owner_name'  => array( __( 'Responsible person (full name)', 'dancingspoon' ), 'text' ),
 		'address'     => array( __( 'Postal address (street, postcode, city)', 'dancingspoon' ), 'textarea' ),
 		'email'       => array( __( 'Contact e-mail', 'dancingspoon' ), 'email' ),
+		'email_business' => array( __( 'Business e-mail for collaborations (empty = contact e-mail)', 'dancingspoon' ), 'email' ),
 		'phone'       => array( __( 'Phone (optional)', 'dancingspoon' ), 'text' ),
 		'authority'   => array( __( 'Data protection authority for your state (name + URL, optional)', 'dancingspoon' ), 'text' ),
 		'log_days'    => array( __( 'Server log retention in days', 'dancingspoon' ), 'number' ),

@@ -8,6 +8,8 @@
  */
 $email   = get_theme_mod( 'dancingspoon_id_email', '' );
 $mail    = $email ? 'mailto:' . $email : home_url( '/contact/' );
+$biz     = trim( (string) get_theme_mod( 'dancingspoon_id_email_business', '' ) ) ?: $email;
+$mail_biz = $biz ? 'mailto:' . $biz . '?subject=' . rawurlencode( __( 'Working with Dancing Spoon', 'dancingspoon' ) ) : $mail;
 $address = trim( (string) get_theme_mod( 'dancingspoon_id_address', '' ) );
 $owner   = trim( (string) get_theme_mod( 'dancingspoon_id_owner_name', '' ) );
 ?>
@@ -78,8 +80,13 @@ $owner   = trim( (string) get_theme_mod( 'dancingspoon_id_owner_name', '' ) );
 				<p><?php esc_html_e( 'Recipe development, food photography and honest product features that fit this kitchen. Tell me what you have in mind and I will tell you if it fits.', 'dancingspoon' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:paragraph {"className":"ds-contact__action"} -->
-				<p class="ds-contact__action"><a href="<?php echo esc_url( $mail ); ?>"><?php esc_html_e( 'Start the conversation →', 'dancingspoon' ); ?></a></p>
+				<p class="ds-contact__action"><a href="<?php echo esc_url( $mail_biz ); ?>"><?php esc_html_e( 'Start the conversation →', 'dancingspoon' ); ?></a></p>
 				<!-- /wp:paragraph -->
+				<?php if ( $biz ) : ?>
+				<!-- wp:paragraph {"className":"ds-contact__meta"} -->
+				<p class="ds-contact__meta"><?php echo esc_html( $biz ); ?></p>
+				<!-- /wp:paragraph -->
+				<?php endif; ?>
 			</div>
 			<!-- /wp:group -->
 		</div>
