@@ -1,48 +1,84 @@
 <!-- wp:group {"tagName":"footer","className":"ds-footer","backgroundColor":"primary","textColor":"base","layout":{"type":"constrained","wideSize":"1200px"},"style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|70"}}}} -->
 <footer class="wp-block-group ds-footer has-base-color has-primary-background-color has-text-color has-background" style="margin-top:var(--wp--preset--spacing--70);padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--40)">
-	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|60"}}}} -->
-	<div class="wp-block-columns alignwide">
-		<!-- wp:column {"width":"40%"} -->
-		<div class="wp-block-column" style="flex-basis:40%">
-			<!-- wp:heading {"level":3} -->
-			<h3 class="wp-block-heading">Dancing Spoon</h3>
-			<!-- /wp:heading -->
-			<!-- wp:paragraph {"fontSize":"small"} -->
-			<p class="has-small-font-size">Simple recipes that look impressive. Croatian and Balkan home cooking, with a soft spot for French, Italian and German classics — tested in a small kitchen, photographed on a wooden table.</p>
+	<!-- wp:columns {"align":"wide","className":"ds-footer__cols","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|60"}}}} -->
+	<div class="wp-block-columns alignwide ds-footer__cols">
+		<!-- wp:column {"width":"42%"} -->
+		<div class="wp-block-column" style="flex-basis:42%">
+			<!-- wp:html -->
+			<a class="ds-brand ds-brand--footer" href="/" rel="home" aria-label="Dancing Spoon — home">
+				<span class="ds-brand__mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="ds-logo-title-f" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+<title id="ds-logo-title-f">Dancing Spoon</title>
+<defs>
+<path id="ds-arc-top-f" d="M 36 100 A 64 64 0 0 1 164 100"/>
+</defs>
+<circle cx="100" cy="100" r="96" stroke-width="2.2"/>
+<circle cx="100" cy="100" r="88.5" stroke-width="1.1"/>
+<text font-family="Gloock, Georgia, 'Times New Roman', serif" font-size="19" letter-spacing="3.2" fill="currentColor" stroke="none">
+<textPath href="#ds-arc-top-f" startOffset="50%" text-anchor="middle">DANCING</textPath>
+</text>
+<text x="100" y="163" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" letter-spacing="5.5" text-anchor="middle" fill="currentColor" stroke="none">SPOON</text>
+<!-- spoon: handle, tip curl, bowl -->
+<path d="M 103 54 C 103 72 101.5 88 100 104" stroke-width="4.2"/>
+<path d="M 103 54 c 2.5 -1.2 5 0.6 4.6 3.4 c -0.4 2.6 -2.8 4.4 -5.2 4.2" stroke-width="2.4"/>
+<ellipse cx="100" cy="116" rx="10" ry="13.5" stroke-width="2.6"/>
+<path d="M 95.5 109.5 c 1.5 -2.8 4.8 -3.8 7.6 -2.4" stroke-width="1.5" opacity="0.7"/>
+<!-- the dance: a dashed back arc and a front arc that ends in an arrow -->
+<path d="M 74 122 A 26 7 0 0 1 126 122" stroke-width="1.9" stroke-dasharray="3 5" opacity="0.8"/>
+<path d="M 132 128 A 32 8.5 0 0 1 68 128.5" stroke-width="2.4"/>
+<path d="M 75 122.5 L 67 128.8 L 75.5 134.5" stroke-width="2.4"/>
+</svg></span>
+				<span class="ds-brand__text"><span class="ds-brand__name">Dancing Spoon</span><span class="ds-brand__tagline">Simple recipes that look impressive</span></span>
+			</a>
+			<!-- /wp:html -->
+			<!-- wp:paragraph {"className":"ds-footer__blurb"} -->
+			<p class="ds-footer__blurb">Croatian and Balkan home cooking, with a soft spot for French, Italian and German classics. Every recipe is cooked in a small kitchen and photographed on a wooden table before it gets published.</p>
 			<!-- /wp:paragraph -->
-			<!-- wp:social-links {"iconColor":"base","iconColorValue":"#f8f5ef","className":"is-style-logos-only"} -->
-			<ul class="wp-block-social-links has-icon-color is-style-logos-only"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
+			<!-- wp:social-links {"iconColor":"base","iconColorValue":"#f8f5ef","size":"has-normal-icon-size","className":"is-style-logos-only ds-social"} -->
+			<ul class="wp-block-social-links has-normal-icon-size has-icon-color is-style-logos-only ds-social"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
 			<!-- /wp:social-links -->
 		</div>
 		<!-- /wp:column -->
 
-		<!-- wp:column {"width":"30%"} -->
-		<div class="wp-block-column" style="flex-basis:30%">
-			<!-- wp:heading {"level":3} -->
-			<h3 class="wp-block-heading">Recipes</h3>
-			<!-- /wp:heading -->
-			<!-- wp:categories {"showHierarchy":false,"showPostCounts":false,"showOnlyTopLevel":true} /-->
+		<!-- wp:column {"width":"19%"} -->
+		<div class="wp-block-column" style="flex-basis:19%">
+			<!-- wp:paragraph {"className":"ds-footer__kicker"} -->
+			<p class="ds-footer__kicker">Recipes</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:categories {"showHierarchy":false,"showPostCounts":false,"showOnlyTopLevel":true,"showEmpty":false,"className":"ds-footer__list"} /-->
 		</div>
 		<!-- /wp:column -->
 
-		<!-- wp:column {"width":"30%"} -->
-		<div class="wp-block-column" style="flex-basis:30%">
-			<!-- wp:heading {"level":3} -->
-			<h3 class="wp-block-heading">Pages</h3>
-			<!-- /wp:heading -->
-			<!-- wp:page-list /-->
+		<!-- wp:column {"width":"19%"} -->
+		<div class="wp-block-column" style="flex-basis:19%">
+			<!-- wp:paragraph {"className":"ds-footer__kicker"} -->
+			<p class="ds-footer__kicker">Explore</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:list {"className":"ds-footer__list"} -->
+			<ul class="wp-block-list ds-footer__list"><!-- wp:list-item --><li><a href="/recipes/">All recipes</a></li><!-- /wp:list-item --><!-- wp:list-item --><li><a href="/about/">About Tena</a></li><!-- /wp:list-item --><!-- wp:list-item --><li><a href="/contact/">Contact</a></li><!-- /wp:list-item --><!-- wp:list-item --><li><a href="/privacy-policy/">Privacy</a></li><!-- /wp:list-item --></ul>
+			<!-- /wp:list -->
+		</div>
+		<!-- /wp:column -->
+
+		<!-- wp:column {"width":"20%"} -->
+		<div class="wp-block-column" style="flex-basis:20%">
+			<!-- wp:paragraph {"className":"ds-footer__kicker"} -->
+			<p class="ds-footer__kicker">Say hello</p>
+			<!-- /wp:paragraph -->
+			<!-- wp:paragraph {"className":"ds-footer__small"} -->
+			<p class="ds-footer__small">Questions about a recipe, a collaboration, or just a photo of what you cooked — the <a href="/contact/">contact page</a> and Instagram DMs are always open.</p>
+			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:column -->
 	</div>
 	<!-- /wp:columns -->
 
-	<!-- wp:group {"align":"wide","className":"ds-footer__legal","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"wrap"},"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}}} -->
-	<div class="wp-block-group alignwide ds-footer__legal" style="margin-top:var(--wp--preset--spacing--50)">
+	<!-- wp:group {"align":"wide","className":"ds-footer__legal","layout":{"type":"flex","justifyContent":"space-between","flexWrap":"wrap"}} -->
+	<div class="wp-block-group alignwide ds-footer__legal">
 		<!-- wp:paragraph -->
-		<p>© Dancing Spoon. All recipes and photos by Tena.</p>
+		<p>© Dancing Spoon · All recipes and photos by Tena</p>
 		<!-- /wp:paragraph -->
 		<!-- wp:paragraph -->
-		<p><a href="/privacy-policy/">Privacy</a> · <a href="/contact/">Contact</a></p>
+		<p>Made in a small kitchen</p>
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->

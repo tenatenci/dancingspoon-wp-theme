@@ -1,10 +1,35 @@
 <!-- wp:group {"tagName":"header","className":"ds-header","layout":{"type":"constrained","wideSize":"1200px"},"style":{"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"}}}} -->
 <header class="wp-block-group ds-header" style="padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)">
-	<!-- wp:group {"align":"wide","layout":{"type":"flex","flexWrap":"wrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
-	<div class="wp-block-group alignwide">
-		<!-- wp:site-logo {"width":72,"shouldSyncIcon":false} /-->
+	<!-- wp:group {"align":"wide","className":"ds-header__row","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+	<div class="wp-block-group alignwide ds-header__row">
+		<!-- wp:html -->
+		<a class="ds-brand" href="/" rel="home" aria-label="Dancing Spoon — home">
+			<span class="ds-brand__mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="ds-logo-title-h" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+<title id="ds-logo-title-h">Dancing Spoon</title>
+<defs>
+<path id="ds-arc-top-h" d="M 36 100 A 64 64 0 0 1 164 100"/>
+</defs>
+<circle cx="100" cy="100" r="96" stroke-width="2.2"/>
+<circle cx="100" cy="100" r="88.5" stroke-width="1.1"/>
+<text font-family="Gloock, Georgia, 'Times New Roman', serif" font-size="19" letter-spacing="3.2" fill="currentColor" stroke="none">
+<textPath href="#ds-arc-top-h" startOffset="50%" text-anchor="middle">DANCING</textPath>
+</text>
+<text x="100" y="163" font-family="Inter, system-ui, sans-serif" font-size="10.5" font-weight="600" letter-spacing="5.5" text-anchor="middle" fill="currentColor" stroke="none">SPOON</text>
+<!-- spoon: handle, tip curl, bowl -->
+<path d="M 103 54 C 103 72 101.5 88 100 104" stroke-width="4.2"/>
+<path d="M 103 54 c 2.5 -1.2 5 0.6 4.6 3.4 c -0.4 2.6 -2.8 4.4 -5.2 4.2" stroke-width="2.4"/>
+<ellipse cx="100" cy="116" rx="10" ry="13.5" stroke-width="2.6"/>
+<path d="M 95.5 109.5 c 1.5 -2.8 4.8 -3.8 7.6 -2.4" stroke-width="1.5" opacity="0.7"/>
+<!-- the dance: a dashed back arc and a front arc that ends in an arrow -->
+<path d="M 74 122 A 26 7 0 0 1 126 122" stroke-width="1.9" stroke-dasharray="3 5" opacity="0.8"/>
+<path d="M 132 128 A 32 8.5 0 0 1 68 128.5" stroke-width="2.4"/>
+<path d="M 75 122.5 L 67 128.8 L 75.5 134.5" stroke-width="2.4"/>
+</svg></span>
+			<span class="ds-brand__text"><span class="ds-brand__name">Dancing Spoon</span><span class="ds-brand__tagline">Simple recipes that look impressive</span></span>
+		</a>
+		<!-- /wp:html -->
 
-		<!-- wp:navigation {"overlayMenu":"mobile","overlayBackgroundColor":"base","overlayTextColor":"contrast","layout":{"type":"flex","justifyContent":"center"},"style":{"spacing":{"blockGap":"var:preset|spacing|40"}}} -->
+		<!-- wp:navigation {"overlayMenu":"mobile","overlayBackgroundColor":"base","overlayTextColor":"contrast","className":"ds-nav","layout":{"type":"flex","justifyContent":"center"},"style":{"spacing":{"blockGap":"var:preset|spacing|40"}}} -->
 			<!-- wp:navigation-link {"label":"Home","url":"/"} /-->
 			<!-- wp:navigation-link {"label":"Recipes","url":"/recipes/"} /-->
 			<!-- wp:navigation-link {"label":"Breakfast","url":"/category/breakfast/"} /-->
@@ -14,11 +39,11 @@
 			<!-- wp:navigation-link {"label":"Contact","url":"/contact/"} /-->
 		<!-- /wp:navigation -->
 
-		<!-- wp:group {"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"var:preset|spacing|30"}}} -->
-		<div class="wp-block-group">
-			<!-- wp:search {"label":"Search","showLabel":false,"placeholder":"Search…","width":200,"widthUnit":"px","buttonText":"Search","buttonPosition":"button-inside","buttonUseIcon":true} /-->
-			<!-- wp:social-links {"iconColor":"primary","iconColorValue":"#542a35","size":"has-small-icon-size","className":"is-style-logos-only","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|20"}}}} -->
-			<ul class="wp-block-social-links has-small-icon-size has-icon-color is-style-logos-only"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
+		<!-- wp:group {"className":"ds-header__tools","layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"center"},"style":{"spacing":{"blockGap":"var:preset|spacing|20"}}} -->
+		<div class="wp-block-group ds-header__tools">
+			<!-- wp:search {"label":"Search","showLabel":false,"placeholder":"Search recipes…","width":220,"widthUnit":"px","buttonText":"Search","buttonPosition":"button-only","buttonUseIcon":true,"className":"ds-search"} /-->
+			<!-- wp:social-links {"iconColor":"primary","iconColorValue":"#542a35","size":"has-normal-icon-size","className":"is-style-logos-only ds-social","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|20"}}}} -->
+			<ul class="wp-block-social-links has-normal-icon-size has-icon-color is-style-logos-only ds-social"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
 			<!-- /wp:social-links -->
 		</div>
 		<!-- /wp:group -->

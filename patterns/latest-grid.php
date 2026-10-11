@@ -19,7 +19,7 @@
 		<!-- /wp:paragraph -->
 	</div>
 	<!-- /wp:group -->
-	<!-- wp:query {"queryId":2,"query":{"perPage":9,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":"exclude"},"align":"wide"} -->
+	<!-- wp:query {"queryId":2,"query":{"perPage":6,"pages":1,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":"exclude"},"align":"wide"} -->
 	<div class="wp-block-query alignwide">
 		<!-- wp:post-template {"layout":{"type":"grid","columnCount":3},"style":{"spacing":{"blockGap":"var:preset|spacing|40"}}} -->
 			<!-- wp:group {"tagName":"article","className":"ds-card","layout":{"type":"default"}} -->
@@ -36,11 +36,6 @@
 			</article>
 			<!-- /wp:group -->
 		<!-- /wp:post-template -->
-		<!-- wp:query-pagination {"paginationArrow":"arrow","layout":{"type":"flex","justifyContent":"center"}} -->
-			<!-- wp:query-pagination-previous /-->
-			<!-- wp:query-pagination-numbers /-->
-			<!-- wp:query-pagination-next /-->
-		<!-- /wp:query-pagination -->
 	</div>
 	<!-- /wp:query -->
 </div>
