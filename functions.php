@@ -51,6 +51,14 @@ function dancingspoon_scripts(): void {
 add_action( 'wp_enqueue_scripts', 'dancingspoon_scripts' );
 
 /**
+ * The header/footer marks spin (SMIL in the parts); hold them still for reduced motion.
+ */
+function dancingspoon_logo_motion(): void {
+	wp_print_inline_script_tag( "if(matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.ds-brand__mark svg').forEach(function(s){s.pauseAnimations();s.setCurrentTime(0);});}" );
+}
+add_action( 'wp_footer', 'dancingspoon_logo_motion' );
+
+/**
  * Pattern category so the home sections are findable in the inserter.
  */
 function dancingspoon_patterns(): void {
