@@ -9,3 +9,9 @@ after the `prod` environment's reviewers approve.
 - `Version:` in `style.css` is the only version knob — bump it to release.
 - How it works, the network path and the first-time setup:
   https://wordpress-plugin-delivery-1c5177.pages.ops.utr.utrzone.local/latest/
+
+## Brand assets
+
+`assets/brand/` holds the logo for social profiles (not shipped in the theme zip): the mark as
+self-contained SVG (fonts embedded) in plum and cream, square avatars 1024/512 px on cream and on plum,
+and transparent PNGs of the mark in both colours. Source of truth is `assets/images/logo.svg`.

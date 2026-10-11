@@ -5,3 +5,4 @@
 .editorconfig   export-ignore
 README.md       export-ignore
 tests/          export-ignore
+assets/brand/   export-ignore
