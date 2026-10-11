@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.8.7
+Version: 0.8.8
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -485,3 +485,18 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .shared-counts-wrap .shared-counts-button:hover { background: var(--wp--preset--color--oat) !important; }
 .shared-counts-wrap .shared-counts-button svg { width: 14px; height: 14px; fill: currentColor !important; }
 .shared-counts-wrap .shared-counts-icon-label { color: inherit !important; }
+
+/* 0.8.8: share row under the recipe buttons, author/date at the end, whole category tile clickable */
+.ds-single-share { margin-top: .9rem; }
+.ds-share { display: flex; flex-wrap: wrap; gap: .45rem; justify-content: center; align-items: center; }
+.ds-share__label { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--wp--preset--color--muted); margin-right: .25rem; }
+.ds-share__btn { display: inline-flex; align-items: center; gap: .35rem; background: var(--wp--preset--color--sand); color: var(--wp--preset--color--primary); border: 1px solid var(--wp--preset--color--border); border-radius: 999px; padding: .3rem .75rem; font: inherit; font-size: .76rem; font-weight: 600; letter-spacing: .03em; text-decoration: none; cursor: pointer; line-height: 1.2; }
+.ds-share__btn:hover { background: var(--wp--preset--color--oat); color: var(--wp--preset--color--primary); }
+.ds-share__btn:disabled { opacity: .7; cursor: default; }
+.ds-single-meta--end { margin-top: 2.25rem; margin-bottom: 0; }
+.ds-single-meta--end p, .ds-single-meta--end .wp-block-post-date, .ds-single-meta--end .wp-block-post-author-name { margin: 0; font-size: var(--wp--preset--font-size--small); color: var(--wp--preset--color--muted); }
+.ds-tiles .wp-block-cover { position: relative; }
+.ds-tile__link { position: absolute; inset: 0; z-index: 3; border-radius: inherit; }
+.ds-tile__link:focus-visible { outline: 3px solid var(--wp--preset--color--oat); outline-offset: -3px; }
+.ds-tiles .wp-block-cover .wp-block-cover__inner-container { position: relative; z-index: 2; pointer-events: none; }
+@media (max-width: 600px) { .ds-share__btn span { display: none; } .ds-share__btn { padding: .45rem .55rem; } .ds-share__btn svg { width: 16px; height: 16px; } }

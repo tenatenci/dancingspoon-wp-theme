@@ -38,6 +38,9 @@ add_action( 'wp_enqueue_scripts', 'dancingspoon_styles' );
  * Carousel behaviour (front page only).
  */
 function dancingspoon_scripts(): void {
+	if ( is_singular( 'post' ) ) {
+		wp_enqueue_script( 'dancingspoon-share', get_theme_file_uri( 'assets/js/share.js' ), array(), wp_get_theme()->get( 'Version' ), true );
+	}
 	if ( is_page() ) {
 		wp_enqueue_script( 'dancingspoon-contact', get_theme_file_uri( 'assets/js/contact.js' ), array(), wp_get_theme()->get( 'Version' ), true );
 	}
@@ -474,3 +477,41 @@ function dancingspoon_drop_duplicate_hero( string $content ): string {
 	return $same ? $m[1] . substr( $content, strlen( $m[0] ) ) : $content;
 }
 add_filter( 'the_content', 'dancingspoon_drop_duplicate_hero', 5 );
+
+
+/**
+ * [ds_share] — share buttons for the current post (no plugin, no counters, no third-party script).
+ */
+function dancingspoon_share_shortcode(): string {
+	if ( ! is_singular() ) {
+		return '';
+	}
+	$url   = get_permalink();
+	$title = get_the_title();
+	$image = (string) get_the_post_thumbnail_url( null, 'large' );
+	$u     = rawurlencode( $url );
+	$t     = rawurlencode( $title );
+	$icons = array(
+		'facebook'  => '<path d="M14 8h3V4h-3c-2.8 0-4.5 1.7-4.5 4.5V11H7v4h2.5v6h4v-6h3l.5-4h-3.5V9c0-.6.4-1 1-1z"/>',
+		'x'         => '<path d="M4 3h4.6l4 5.7L17.5 3H20l-6.2 7.2L21 21h-4.6l-4.4-6.1L6.5 21H4l6.8-7.8z"/>',
+		'pinterest' => '<path d="M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.3-5.4s-.3-.7-.3-1.6c0-1.5.9-2.7 2-2.7.9 0 1.4.7 1.4 1.6 0 1-.6 2.4-.9 3.7-.3 1.1.6 2 1.7 2 2 0 3.5-2.1 3.5-5.1 0-2.7-1.9-4.6-4.7-4.6-3.2 0-5.1 2.4-5.1 4.9 0 1 .4 2 .8 2.6.1.1.1.2.1.3l-.3 1.3c0 .2-.2.3-.4.2-1.4-.7-2.3-2.7-2.3-4.4 0-3.6 2.6-6.9 7.5-6.9 3.9 0 7 2.8 7 6.6 0 3.9-2.5 7.1-5.9 7.1-1.2 0-2.3-.6-2.6-1.3l-.7 2.7c-.3 1-1 2.3-1.4 3A10 10 0 1 0 12 2z"/>',
+		'whatsapp'  => '<path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.8 2.8 4.5 3.9 1.7.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3z"/>',
+		'email'     => '<path d="M3 5h18v14H3z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="1.8"/>',
+		'link'      => '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+	);
+	$links = array(
+		'facebook'  => array( 'Facebook', 'https://www.facebook.com/sharer/sharer.php?u=' . $u ),
+		'x'         => array( 'X', 'https://twitter.com/intent/tweet?url=' . $u . '&text=' . $t ),
+		'pinterest' => array( 'Pinterest', 'https://pinterest.com/pin/create/button/?url=' . $u . '&media=' . rawurlencode( $image ) . '&description=' . $t ),
+		'whatsapp'  => array( 'WhatsApp', 'https://api.whatsapp.com/send?text=' . $t . '%20' . $u ),
+		'email'     => array( 'E-mail', 'mailto:?subject=' . $t . '&body=' . $u ),
+	);
+	$out = '<div class="ds-share"><span class="ds-share__label">' . esc_html__( 'Share', 'dancingspoon' ) . '</span>';
+	foreach ( $links as $key => $def ) {
+		list( $label, $href ) = $def;
+		$out .= '<a class="ds-share__btn ds-share__btn--' . $key . '" href="' . esc_url( $href ) . '" target="_blank" rel="noopener nofollow"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">' . $icons[ $key ] . '</svg><span>' . esc_html( $label ) . '</span></a>';
+	}
+	$out .= '<button type="button" class="ds-share__btn ds-share__copy" data-url="' . esc_url( $url ) . '" data-copied="' . esc_attr__( 'Copied', 'dancingspoon' ) . '"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">' . $icons['link'] . '</svg><span>' . esc_html__( 'Copy link', 'dancingspoon' ) . '</span></button></div>';
+	return $out;
+}
+add_shortcode( 'ds_share', 'dancingspoon_share_shortcode' );

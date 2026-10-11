@@ -49,8 +49,11 @@ if ( ! $tiles ) {
 		<?php foreach ( $tiles as $tile ) : list( $link, $label, $url ) = $tile; $url = esc_url( $url ); $link = esc_url( $link ); ?>
 		<!-- wp:cover {"url":"<?php echo $url; ?>","dimRatio":40,"overlayColor":"contrast","isUserOverlayColor":true,"minHeight":200,"contentPosition":"bottom left","style":{"spacing":{"padding":{"top":"var:preset|spacing|30","right":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30"}}}} -->
 		<div class="wp-block-cover has-custom-content-position is-position-bottom-left" style="padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30);min-height:200px"><span aria-hidden="true" class="wp-block-cover__background has-contrast-background-color has-background-dim-40 has-background-dim"></span><img class="wp-block-cover__image-background" alt="" src="<?php echo $url; ?>" data-object-fit="cover"/><div class="wp-block-cover__inner-container">
+			<!-- wp:html -->
+			<a class="ds-tile__link" href="<?php echo $link; ?>"><span class="screen-reader-text"><?php echo esc_html( $label ); ?></span></a>
+			<!-- /wp:html -->
 			<!-- wp:heading {"level":3,"textColor":"base"} -->
-			<h3 class="wp-block-heading has-base-color has-text-color"><a href="<?php echo $link; ?>"><?php echo esc_html( $label ); ?></a></h3>
+			<h3 class="wp-block-heading has-base-color has-text-color"><?php echo esc_html( $label ); ?></h3>
 			<!-- /wp:heading -->
 		</div></div>
 		<!-- /wp:cover -->
