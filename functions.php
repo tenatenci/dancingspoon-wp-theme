@@ -558,3 +558,66 @@ foreach ( array( 'wp_head', 'login_head', 'admin_head' ) as $hook ) {
 	add_action( $hook, 'dancingspoon_favicons', 99 );
 }
 add_filter( 'get_site_icon_url', fn() => get_theme_file_uri( 'assets/favicon/icon-512.png' ) );
+
+/**
+ * The categories the site shows as sections: top level, with at least one post, never the default
+ * "Uncategorized". Same rule as the footer's Categories block, so header, footer and the home row agree.
+ *
+ * @return WP_Term[]
+ */
+function dancingspoon_categories( string $orderby = 'name' ): array {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'category',
+			'hide_empty' => true,
+			'parent'     => 0,
+			'orderby'    => $orderby,
+			'order'      => 'count' === $orderby ? 'DESC' : 'ASC',
+			'exclude'    => array( (int) get_option( 'default_category' ) ),
+		)
+	);
+	return is_wp_error( $terms ) ? array() : $terms;
+}
+
+/**
+ * Header menu: the "Categories" placeholder link in parts/header.html (class ds-nav-categories) becomes one link
+ * per category, so a new category shows up in the menu as soon as it has a recipe. Past five, all but four go into
+ * a "More" dropdown so the one-line desktop menu keeps fitting.
+ */
+function dancingspoon_nav_categories( array $parsed_block ): array {
+	if ( 'core/navigation' !== ( $parsed_block['blockName'] ?? '' ) || empty( $parsed_block['innerBlocks'] ) ) {
+		return $parsed_block;
+	}
+	$is_slot = static fn( array $b ): bool => in_array( 'ds-nav-categories', explode( ' ', (string) ( $b['attrs']['className'] ?? '' ) ), true );
+	if ( ! array_filter( $parsed_block['innerBlocks'], $is_slot ) ) {
+		return $parsed_block;
+	}
+	$link  = static fn( WP_Term $t ): array => array(
+		'blockName'    => 'core/navigation-link',
+		'attrs'        => array( 'label' => $t->name, 'url' => get_category_link( $t ), 'type' => 'category', 'kind' => 'taxonomy', 'id' => $t->term_id ),
+		'innerBlocks'  => array(),
+		'innerHTML'    => '',
+		'innerContent' => array(),
+	);
+	$links = array_map( $link, dancingspoon_categories() );
+	$top   = 4;
+	if ( count( $links ) > $top + 1 ) {
+		$rest  = array_slice( $links, $top );
+		$links = array_slice( $links, 0, $top );
+		$links[] = array(
+			'blockName'    => 'core/navigation-submenu',
+			'attrs'        => array( 'label' => __( 'More', 'dancingspoon' ), 'url' => home_url( '/recipes/' ), 'className' => 'ds-nav-more' ),
+			'innerBlocks'  => $rest,
+			'innerHTML'    => '',
+			'innerContent' => array_fill( 0, count( $rest ), null ),
+		);
+	}
+	$inner = array();
+	foreach ( $parsed_block['innerBlocks'] as $child ) {
+		array_push( $inner, ...( $is_slot( $child ) ? $links : array( $child ) ) );
+	}
+	$parsed_block['innerBlocks']  = $inner;
+	$parsed_block['innerContent'] = array_fill( 0, count( $inner ), null );
+	return $parsed_block;
+}
+add_filter( 'render_block_data', 'dancingspoon_nav_categories' );

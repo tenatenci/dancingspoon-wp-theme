@@ -9,7 +9,7 @@
 <!-- wp:group {"align":"wide","backgroundColor":"sand","layout":{"type":"constrained","contentSize":"640px"},"style":{"spacing":{"margin":{"top":"var:preset|spacing|60"},"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"12px"}}} -->
 <div class="wp-block-group alignwide has-sand-background-color has-background" style="border-radius:12px;margin-top:var(--wp--preset--spacing--60);padding-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--50);padding-left:var(--wp--preset--spacing--40)">
 	<!-- wp:heading {"textAlign":"center","level":2} -->
-	<h2 class="wp-block-heading has-text-align-center"><?php esc_html_e( 'New recipes, every other week', 'dancingspoon' ); ?></h2>
+	<h2 class="wp-block-heading has-text-align-center"><?php esc_html_e( 'New recipes, every week', 'dancingspoon' ); ?></h2>
 	<!-- /wp:heading -->
 	<!-- wp:paragraph {"align":"center"} -->
 	<p class="has-text-align-center"><?php esc_html_e( 'Follow along for the behind-the-scenes, the fails and the first look at what is coming out of the oven.', 'dancingspoon' ); ?></p>
