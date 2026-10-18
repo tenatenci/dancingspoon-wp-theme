@@ -198,7 +198,7 @@ add_action( 'customize_register', 'dancingspoon_customize' );
  * Apply the options to the two front-page queries. The grid never repeats the hero's post.
  */
 function dancingspoon_front_queries( array $query, WP_Block $block ): array {
-	static $hero_id = 0;
+	static $hero_ids = array();
 	static $carousel_ids = array();
 	$query_id = (int) ( $block->context['queryId'] ?? 0 );
 	if ( ! in_array( $query_id, array( 1, 2, 8 ), true ) || ! ( is_home() || is_front_page() ) ) {
@@ -213,6 +213,17 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	$grid_count = (int) get_theme_mod( 'dancingspoon_grid_count', 6 );
 
 	if ( 1 === $query_id ) {
+		$festive = dancingspoon_festive_ids();
+		if ( $festive ) {
+			// the Christmas layout with tagged recipes: the top card slides through all of them, newest first
+			$hero_ids                = $festive;
+			$query['post__in']       = $festive;
+			$query['orderby']        = 'post__in';
+			$query['posts_per_page'] = count( $festive );
+			$query['offset']         = 0;
+			unset( $query['order'] );
+			return $query;
+		}
 		$pick = 'month' === $hero_mode ? array( $hero_post ) : get_posts(
 			array(
 				'post_type'      => 'post',
@@ -224,9 +235,9 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 				'no_found_rows'  => true,
 			)
 		);
-		$hero_id = (int) ( $pick[0] ?? 0 );
-		if ( $hero_id ) {
-			$query['post__in'] = array( $hero_id );
+		$hero_ids = array_filter( array( (int) ( $pick[0] ?? 0 ) ) );
+		if ( $hero_ids ) {
+			$query['post__in'] = $hero_ids;
 			$query['offset']   = 0;
 			$query['orderby']  = 'post__in';
 		}
@@ -240,7 +251,7 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
 				'posts_per_page' => (int) get_theme_mod( 'dancingspoon_carousel_count', 6 ),
-				'post__not_in'   => $hero_id ? array( $hero_id ) : array(),
+				'post__not_in'   => $hero_ids,
 				'orderby'        => 'random' === get_theme_mod( 'dancingspoon_carousel_mode', 'latest' ) ? 'rand' : 'date',
 				'order'          => 'DESC',
 				'fields'         => 'ids',
@@ -260,7 +271,7 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 	// query 2: the grid — never the hero, never what the carousel already shows
 	$query['posts_per_page'] = $grid_count;
 	$query['offset']         = 0;
-	$shown                   = array_filter( array_merge( array( $hero_id ), $carousel_ids ) );
+	$shown                   = array_filter( array_merge( $hero_ids, $carousel_ids ) );
 	if ( $shown ) {
 		$query['post__not_in'] = array_values( $shown );
 	}
@@ -279,7 +290,7 @@ add_filter( 'query_loop_block_query_vars', 'dancingspoon_front_queries', 10, 2 )
  * The hero kicker, in step with the Customizer choice.
  */
 function dancingspoon_hero_kicker(): string {
-	if ( dancingspoon_xmas() ) {
+	if ( dancingspoon_festive_ids() ) {
 		$festive = trim( (string) get_theme_mod( 'dancingspoon_xmas_kicker', dancingspoon_xmas_defaults()['kicker'] ) );
 		if ( '' !== $festive ) {
 			return $festive;
@@ -634,8 +645,9 @@ add_filter( 'render_block_data', 'dancingspoon_nav_categories' );
 /**
  * Christmas layout (Appearance → Customize → Dancing Spoon seasonal). One switch, on by default, turns the whole
  * look on: body class ds-xmas drives the CSS (Santa hat on the mark, snow caps on the hero and the evergreen
- * footer, red kickers), a greeting bar sits above the header, the hero kicker reads "Festive recipe" and
- * assets/js/snow.js draws the snow. Off = the ordinary cream-and-plum site, nothing else changes.
+ * footer, red kickers), a greeting bar sits above the header, two trees stand in the side margins of wide screens,
+ * assets/js/snow.js draws the snow, and the recipes in the festive category turn the top card into a slider
+ * ("Festive recipes", patterns/hero.php). Off = the ordinary cream-and-plum site, nothing else changes.
  */
 function dancingspoon_xmas(): bool {
 	return (bool) get_theme_mod( 'dancingspoon_xmas', true );
@@ -644,7 +656,8 @@ function dancingspoon_xmas(): bool {
 function dancingspoon_xmas_defaults(): array {
 	return array(
 		'greeting' => __( 'Merry Christmas from the Dancing Spoon kitchen', 'dancingspoon' ),
-		'kicker'   => __( 'Festive recipe', 'dancingspoon' ),
+		'kicker'   => __( 'Festive recipes', 'dancingspoon' ),
+		'category' => 'festive-recipes',
 	);
 }
 
@@ -661,7 +674,7 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 		array(
 			'section'     => 'dancingspoon_seasonal',
 			'label'       => __( 'Christmas layout', 'dancingspoon' ),
-			'description' => __( 'Santa hat on the logo, snow caps on the hero and an evergreen footer, the greeting bar.', 'dancingspoon' ),
+			'description' => __( 'Santa hat on the logo, snow caps on the hero and an evergreen footer, the greeting bar, the festive slider.', 'dancingspoon' ),
 			'type'        => 'checkbox',
 		)
 	);
@@ -680,10 +693,44 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 		'dancingspoon_xmas_greeting',
 		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Greeting bar above the header', 'dancingspoon' ), 'description' => __( 'Empty = no bar.', 'dancingspoon' ), 'type' => 'text' )
 	);
+	$wp_customize->add_setting( 'dancingspoon_xmas_trees', array( 'default' => true, 'sanitize_callback' => $bool ) );
+	$wp_customize->add_control(
+		'dancingspoon_xmas_trees',
+		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Two trees in the side margins (wide screens only)', 'dancingspoon' ), 'type' => 'checkbox' )
+	);
+	$choices = array( 0 => __( '— a category named "Festive recipes", when it exists —', 'dancingspoon' ) );
+	$terms   = get_terms( array( 'taxonomy' => 'category', 'hide_empty' => false, 'exclude' => array( (int) get_option( 'default_category' ) ) ) );
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		$choices[ $term->term_id ] = $term->name;
+	}
+	$wp_customize->add_setting( 'dancingspoon_xmas_category', array( 'default' => 0, 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control(
+		'dancingspoon_xmas_category',
+		array(
+			'section'     => 'dancingspoon_seasonal',
+			'label'       => __( 'The festive recipes category', 'dancingspoon' ),
+			'description' => __( 'Every recipe in it joins the festive slider at the top of the front page, newest first. Create the category under Posts → Categories and file the recipes there. Empty category = the usual top card.', 'dancingspoon' ),
+			'type'        => 'select',
+			'choices'     => $choices,
+		)
+	);
 	$wp_customize->add_setting( 'dancingspoon_xmas_kicker', array( 'default' => $d['kicker'], 'sanitize_callback' => 'sanitize_text_field' ) );
 	$wp_customize->add_control(
 		'dancingspoon_xmas_kicker',
-		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Label over the top recipe', 'dancingspoon' ), 'description' => __( 'Replaces "Recipe of the month" while the Christmas layout is on. Empty = the usual label.', 'dancingspoon' ), 'type' => 'text' )
+		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Label over the festive slider', 'dancingspoon' ), 'description' => __( 'Shown instead of "Recipe of the month" while tagged recipes exist. Empty = the usual label.', 'dancingspoon' ), 'type' => 'text' )
+	);
+	$wp_customize->add_setting(
+		'dancingspoon_xmas_count',
+		array( 'default' => 6, 'sanitize_callback' => fn( $v ) => in_array( (int) $v, array( 3, 6, 9 ), true ) ? (int) $v : 6 )
+	);
+	$wp_customize->add_control(
+		'dancingspoon_xmas_count',
+		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Recipes in the festive slider (at most)', 'dancingspoon' ), 'type' => 'select', 'choices' => array( 3 => '3', 6 => '6', 9 => '9' ) )
+	);
+	$wp_customize->add_setting( 'dancingspoon_xmas_autoplay', array( 'default' => true, 'sanitize_callback' => $bool ) );
+	$wp_customize->add_control(
+		'dancingspoon_xmas_autoplay',
+		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Festive slider scrolls by itself (every 5 s)', 'dancingspoon' ), 'type' => 'checkbox' )
 	);
 }
 add_action( 'customize_register', 'dancingspoon_customize_seasonal' );
@@ -716,3 +763,95 @@ function dancingspoon_xmas_bar( string $content, array $block ): string {
 	return '<div class="ds-xmas-bar"><p class="ds-xmas-bar__text"><span class="ds-xmas-bar__icon">' . $tree . '</span><span>' . esc_html( $greeting ) . '</span></p></div>' . $content;
 }
 add_filter( 'render_block_core/template-part', 'dancingspoon_xmas_bar', 10, 2 );
+
+/**
+ * The festive recipes: published posts in the festive category (the one chosen in the Customizer, else the
+ * category with the slug festive-recipes or the name "Festive recipes"), newest first, capped by the Customizer
+ * count. Empty unless the Christmas layout is on. Shared by the hero pattern, its query and the kicker.
+ *
+ * @return int[]
+ */
+function dancingspoon_festive_ids(): array {
+	static $ids = null;
+	if ( null !== $ids ) {
+		return $ids;
+	}
+	$ids = array();
+	if ( ! dancingspoon_xmas() ) {
+		return $ids;
+	}
+	$chosen = (int) get_theme_mod( 'dancingspoon_xmas_category', 0 );
+	$term   = $chosen ? get_term( $chosen, 'category' ) : null;
+	if ( ! $term instanceof WP_Term ) {
+		$slug = dancingspoon_xmas_defaults()['category'];
+		$term = get_term_by( 'slug', $slug, 'category' ) ?: get_term_by( 'name', __( 'Festive recipes', 'dancingspoon' ), 'category' );
+	}
+	if ( ! $term instanceof WP_Term ) {
+		return $ids;
+	}
+	$ids = array_map(
+		'intval',
+		get_posts(
+			array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => (int) get_theme_mod( 'dancingspoon_xmas_count', 6 ),
+				'cat'            => $term->term_id,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		)
+	);
+	return $ids;
+}
+
+/**
+ * The slider's photos carry their own ratio inline (aspect-ratio: W / H from the attachment's width and height).
+ * Phones show the photo whole, so the theme's 16:11 crop must not apply there; but a plain "aspect-ratio: auto"
+ * would also drop the ratio the browser derives from the width/height attributes, and WordPress's lazy-loading
+ * markup (sizes="auto") puts such an image under size containment with a 3000 × 1500 placeholder: the photo
+ * would render 1500 px tall. An explicit ratio sidesteps both. The side-by-side layout sets an explicit height,
+ * which wins over the ratio, so desktop stays a filled, cropped column.
+ */
+function dancingspoon_festive_image_ratio( string $content, array $block, WP_Block $instance ): string {
+	if ( 1 !== (int) ( $instance->context['queryId'] ?? 0 ) || ! dancingspoon_festive_ids() ) {
+		return $content;
+	}
+	$p = new WP_HTML_Tag_Processor( $content );
+	if ( ! $p->next_tag( 'img' ) ) {
+		return $content;
+	}
+	$w = (int) $p->get_attribute( 'width' );
+	$h = (int) $p->get_attribute( 'height' );
+	if ( $w > 0 && $h > 0 ) {
+		$style = trim( (string) $p->get_attribute( 'style' ), "; \t" );
+		$p->set_attribute( 'style', ( '' === $style ? '' : $style . ';' ) . 'aspect-ratio:' . $w . ' / ' . $h . ';' );
+	}
+	return $p->get_updated_html();
+}
+add_filter( 'render_block_core/post-featured-image', 'dancingspoon_festive_image_ratio', 10, 3 );
+
+/**
+ * Two trees in the side margins (fixed, behind the content, only where a wide screen leaves room). The star and
+ * the baubles glow in turn and the tree sways a degree either way; all of it still for reduced motion.
+ */
+function dancingspoon_xmas_trees(): void {
+	if ( ! dancingspoon_xmas() || ! get_theme_mod( 'dancingspoon_xmas_trees', true ) ) {
+		return;
+	}
+	$tree = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 180" aria-hidden="true" focusable="false">'
+		. '<rect x="52" y="148" width="16" height="30" rx="3" fill="#6b4a33"/>'
+		. '<path d="M60 64 8 156h104Z" fill="#2a5443"/><path d="M60 36 20 116h80Z" fill="#31634f"/><path d="M60 12 32 78h56Z" fill="#3a7059"/>'
+		. '<g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"><path d="M32 78q7-5 14 0t14 0 14 0 14 0"/><path d="M20 116q8-5 16 0t16 0 16 0 16 0 16 0"/><path d="M8 156q8.7-5 17.3 0t17.3 0 17.3 0 17.3 0 17.3 0 17.3 0"/></g>'
+		. '<path class="ds-xmas-tree__star" d="M60 2 62.2 7.9 68.6 8.2 63.6 12.2 65.3 18.3 60 14.8 54.7 18.3 56.4 12.2 51.4 8.2 57.8 7.9Z" fill="#e5c266"/>'
+		. '<g class="ds-xmas-tree__balls">'
+		. '<circle class="ds-xmas-tree__ball" cx="48" cy="60" r="4" fill="#c43c48"/><circle class="ds-xmas-tree__ball" cx="72" cy="56" r="4" fill="#e5c266"/>'
+		. '<circle class="ds-xmas-tree__ball" cx="40" cy="100" r="4" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="64" cy="92" r="4" fill="#f3e9d8"/>'
+		. '<circle class="ds-xmas-tree__ball" cx="84" cy="104" r="4" fill="#c43c48"/><circle class="ds-xmas-tree__ball" cx="30" cy="140" r="4" fill="#f3e9d8"/>'
+		. '<circle class="ds-xmas-tree__ball" cx="56" cy="134" r="4" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="90" cy="142" r="4" fill="#c43c48"/>'
+		. '</g></svg>';
+	echo '<div class="ds-xmas-trees" aria-hidden="true"><div class="ds-xmas-tree ds-xmas-tree--left">' . $tree . '</div><div class="ds-xmas-tree ds-xmas-tree--right">' . $tree . '</div></div>' . "\n";
+}
+add_action( 'wp_footer', 'dancingspoon_xmas_trees' );

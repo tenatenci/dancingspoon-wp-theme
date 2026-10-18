@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.12.1
+Version: 0.13.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -574,3 +574,45 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 
 @media (max-width: 600px) { .ds-xmas-bar { font-size: .8rem; } }
 @media print { .ds-snow, .ds-xmas-bar { display: none !important; } }
+
+/* 0.13.0: the festive slider — the hero card slides through the tagged recipes, arrows and dots below it */
+.ds-hero-slider .wp-block-post-template.ds-carousel__track { padding-bottom: .5rem; }
+.ds-hero-slider .ds-carousel__track > li { flex: 0 0 100% !important; }
+.ds-hero-slider .ds-hero > .wp-block-columns { flex: 1 1 auto; }
+.ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
+.ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
+.ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }
+.ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
+.ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
+/* side by side: the photo fills the card's full height (the longest title sets it), cropped as needed */
+@media (min-width: 782px) {
+	.ds-hero-slider .ds-hero .wp-block-column:first-child { align-self: stretch; }
+	.ds-hero-slider .ds-hero .wp-block-post-featured-image { position: relative; height: 100%; min-height: clamp(300px, 34vw, 430px); margin: 0; }
+	.ds-hero-slider .ds-hero .wp-block-post-featured-image a { position: absolute; inset: 0; display: block; }
+	.ds-hero-slider .ds-hero .wp-block-post-featured-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+}
+/* phones and tablets: the festive photo is shown whole at its own ratio (inline aspect-ratio, see
+   dancingspoon_festive_image_ratio in functions.php), never cropped to the 16:11 window */
+@media (max-width: 781px) {
+	.ds-hero-slider .ds-hero .wp-block-post-featured-image img { height: auto; }
+}
+
+/* 0.13.0: two trees in the side margins — fixed at the bottom, behind the content, only where a wide screen leaves room */
+.ds-xmas-trees { display: none; }
+@media (min-width: 1400px) {
+	.ds-xmas-trees { display: block; }
+	.ds-xmas-tree { position: fixed; bottom: 0; z-index: -1; width: min(220px, calc((100vw - 1200px) / 2 - 28px)); opacity: .6; pointer-events: none; }
+	.ds-xmas-tree--left { left: 12px; }
+	.ds-xmas-tree--right { right: 12px; }
+	.ds-xmas-tree svg { display: block; width: 100%; height: auto; transform-origin: 50% 100%; animation: ds-sway 9s ease-in-out infinite; }
+	.ds-xmas-tree--right svg { animation-delay: -4.5s; }
+}
+@keyframes ds-sway { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg); } }
+.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-glow 2.8s ease-in-out infinite; }
+.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.9s; }
+.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.8s; }
+.ds-xmas-tree__ball:nth-of-type(5n) { animation-duration: 3.6s; }
+.ds-xmas-tree__star { animation-duration: 3.8s; }
+@keyframes ds-glow { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ds-xmas-tree svg, .ds-xmas-tree__ball, .ds-xmas-tree__star { animation: none; } }
+@media print { .ds-xmas-trees { display: none !important; } }

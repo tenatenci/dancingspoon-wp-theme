@@ -19,6 +19,27 @@
 		};
 		prev.addEventListener('click', function () { go(-1); });
 		next.addEventListener('click', function () { go(1); });
+		// optional dots (the festive hero slider): one per item, the current one marked as the track scrolls
+		var dots = c.querySelector('.ds-carousel__dots');
+		if (dots) {
+			var label = dots.getAttribute('data-label') || '';
+			var items = track.querySelectorAll(':scope > li');
+			var all = [];
+			items.forEach(function (_, i) {
+				var d = document.createElement('button');
+				d.type = 'button'; d.className = 'ds-carousel__dot';
+				d.setAttribute('aria-label', (label + ' ' + (i + 1)).trim());
+				d.addEventListener('click', function () { track.scrollTo({ left: i * step(), behavior: 'smooth' }); });
+				dots.appendChild(d); all.push(d);
+			});
+			var mark = function () {
+				var cur = Math.round(track.scrollLeft / step());
+				all.forEach(function (d, j) { d.setAttribute('aria-current', j === cur ? 'true' : 'false'); });
+			};
+			var pending = false;
+			track.addEventListener('scroll', function () { if (!pending) { pending = true; window.requestAnimationFrame(function () { pending = false; mark(); }); } }, { passive: true });
+			mark();
+		}
 		track.addEventListener('keydown', function (e) {
 			if (e.key === 'ArrowRight') { go(1); e.preventDefault(); }
 			if (e.key === 'ArrowLeft') { go(-1); e.preventDefault(); }
