@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.4
+Version: 0.13.5
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -592,32 +592,20 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
 .ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
 
-/* 0.13.0: two trees in the side margins — behind the content, only where a wide screen leaves room.
-   0.13.3: slim and tall — the tree fills the margin's width and grows to the full viewport height (xMidYMax meet),
-   brighter, and the baubles and the star blink in turn.
-   0.13.4: a sticky zero-height row just before the footer: pinned to the viewport bottom while scrolling, then it
-   rides up with the footer so the trees stand on the footer's snow line instead of sliding behind it. */
-.ds-xmas-trees { display: none; }
-@media (min-width: 1400px) {
-	/* overflow-x clip (not hidden: the vertical axis must stay visible for the 100vh trees) keeps the swaying
-	   tree's corner from poking past the viewport and widening the page by a few pixels */
-	.ds-xmas-trees { display: block; position: sticky; bottom: 0; height: 0; width: 100%; z-index: -1; margin: 0 !important; pointer-events: none; overflow-x: clip; }
-	/* the row sits one block gap plus the footer's top margin above the footer's edge: the trees reach down past
-	   that, so at the end of the page the trunks stand on the footer's snow line (the trunk stays under the fold
-	   while the page scrolls) */
-	.ds-xmas-tree { position: absolute; bottom: calc(-1 * (var(--wp--style--block-gap, 1.25rem) + var(--wp--preset--spacing--70, 6rem))); height: 100vh; width: min(340px, calc((100vw - 1200px) / 2 - 10px)); opacity: .85; pointer-events: none; }
-	.ds-xmas-tree--left { left: 5px; }
-	.ds-xmas-tree--right { right: 5px; }
-	.ds-xmas-tree svg { display: block; width: 100%; height: 100%; transform-origin: 50% 100%; animation: ds-sway 10s ease-in-out infinite; }
-	.ds-xmas-tree--right svg { animation-delay: -5s; }
-}
-@keyframes ds-sway { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
-.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-blink 1.8s ease-in-out infinite; }
-.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.6s; }
-.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.2s; animation-duration: 2.2s; }
-.ds-xmas-tree__ball:nth-of-type(4n+1) { animation-duration: 1.5s; }
-.ds-xmas-tree__ball:nth-of-type(5n+2) { animation-delay: -.3s; }
-.ds-xmas-tree__star { animation-duration: 2.6s; }
-@keyframes ds-blink { 0%, 100% { opacity: .12; } 50% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .ds-xmas-tree svg, .ds-xmas-tree__ball, .ds-xmas-tree__star { animation: none; } }
-@media print { .ds-xmas-trees { display: none !important; } }
+/* 0.13.5: one big tree in the background — the first child of <main>, absolutely positioned behind the content and
+   spanning the page from the top of main down to the footer's edge (one block gap plus the footer's top margin below
+   main's end), so scrolling walks down the tree and the trunk stands on the footer's snow line. xMidYMax meet keeps it
+   proportional and never wider than the page: a short page shows a smaller tree, a phone the bottom tiers. A faint
+   watermark (fill opacities in the SVG) whose lights blink in turn; no motion for reduced-motion readers. */
+.ds-xmas main.wp-block-group { position: relative; }
+.ds-xmas-tree { position: absolute; top: 0; left: 0; right: 0; bottom: calc(-1 * (var(--wp--style--block-gap, 1.25rem) + var(--wp--preset--spacing--70, 6rem))); max-width: none !important; margin: 0 !important; z-index: -1; overflow: hidden; pointer-events: none; }
+.ds-xmas-tree svg { display: block; width: 100%; height: 100%; }
+.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-blink 2.4s ease-in-out infinite; }
+.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.8s; }
+.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.6s; animation-duration: 3s; }
+.ds-xmas-tree__ball:nth-of-type(4n+1) { animation-duration: 2s; }
+.ds-xmas-tree__ball:nth-of-type(5n+2) { animation-delay: -.4s; }
+.ds-xmas-tree__star { animation-duration: 3.4s; }
+@keyframes ds-blink { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { .ds-xmas-tree__ball, .ds-xmas-tree__star { animation: none; opacity: .6; } }
+@media print { .ds-xmas-tree { display: none !important; } }
