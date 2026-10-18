@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.5
+Version: 0.13.6
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -592,20 +592,3 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
 .ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
 
-/* 0.13.5: one big tree in the background — the first child of <main>, absolutely positioned behind the content and
-   spanning the page from the top of main down to the footer's edge (one block gap plus the footer's top margin below
-   main's end), so scrolling walks down the tree and the trunk stands on the footer's snow line. xMidYMax meet keeps it
-   proportional and never wider than the page: a short page shows a smaller tree, a phone the bottom tiers. A faint
-   watermark (fill opacities in the SVG) whose lights blink in turn; no motion for reduced-motion readers. */
-.ds-xmas main.wp-block-group { position: relative; }
-.ds-xmas-tree { position: absolute; top: 0; left: 0; right: 0; bottom: calc(-1 * (var(--wp--style--block-gap, 1.25rem) + var(--wp--preset--spacing--70, 6rem))); max-width: none !important; margin: 0 !important; z-index: -1; overflow: hidden; pointer-events: none; }
-.ds-xmas-tree svg { display: block; width: 100%; height: 100%; }
-.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-blink 2.4s ease-in-out infinite; }
-.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.8s; }
-.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.6s; animation-duration: 3s; }
-.ds-xmas-tree__ball:nth-of-type(4n+1) { animation-duration: 2s; }
-.ds-xmas-tree__ball:nth-of-type(5n+2) { animation-delay: -.4s; }
-.ds-xmas-tree__star { animation-duration: 3.4s; }
-@keyframes ds-blink { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
-@media (prefers-reduced-motion: reduce) { .ds-xmas-tree__ball, .ds-xmas-tree__star { animation: none; opacity: .6; } }
-@media print { .ds-xmas-tree { display: none !important; } }
