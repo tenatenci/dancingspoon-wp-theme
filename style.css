@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.11.0
+Version: 0.12.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -534,3 +534,54 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more > .wp-block-navigation-item__content, .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more > .wp-block-navigation__submenu-icon { display: none; }
 .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more .wp-block-navigation__submenu-container { display: contents; background: none; border: 0; padding: 0; min-width: 0; }
 .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more .wp-block-navigation__submenu-container .wp-block-navigation-item__content { padding: 0; }
+
+/* ======================================================================
+   0.12.0 — Christmas layout (Customize → Dancing Spoon seasonal; body.ds-xmas, body.ds-xmas--lights)
+   ====================================================================== */
+.ds-xmas { --ds-xmas-green: #2a5443; --ds-xmas-pine: #1c3b2f; --ds-xmas-red: #a8323e; --ds-xmas-berry: #c43c48; --ds-xmas-gold: #d8b25c; }
+
+/* greeting bar: first thing in .wp-site-blocks, above the header */
+.ds-xmas-bar { position: relative; background: var(--ds-xmas-pine); color: var(--wp--preset--color--base); text-align: center; padding: .55rem var(--wp--style--root--padding-right, 1rem) .65rem var(--wp--style--root--padding-left, 1rem); font-size: var(--wp--preset--font-size--small); line-height: 1.4; }
+.ds-xmas-bar::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: repeating-linear-gradient(135deg, var(--ds-xmas-berry) 0 7px, #fff 7px 14px, var(--ds-xmas-green) 14px 21px, #fff 21px 28px); }
+.ds-xmas-bar__text { margin: 0; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .3rem .6rem; }
+.ds-xmas-bar__icon { display: inline-flex; color: var(--ds-xmas-gold); }
+.ds-xmas-bar__icon svg { width: 17px; height: 17px; }
+.ds-xmas-bar__link { color: var(--ds-xmas-gold); font-weight: 600; text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--ds-xmas-gold) 50%, transparent); white-space: nowrap; transition: border-color var(--ds-ease); }
+.ds-xmas-bar__link:hover { color: var(--ds-xmas-gold); border-bottom-color: var(--ds-xmas-gold); }
+.ds-xmas .wp-site-blocks > .ds-xmas-bar + * { margin-block-start: 0 !important; }
+
+/* a Santa hat on the mark, perched on the top-right of the ring (header and footer) */
+.ds-xmas .ds-brand__mark { position: relative; overflow: visible; }
+.ds-xmas .ds-brand__mark::after { content: ""; position: absolute; top: -20%; right: -24%; width: 58%; height: 43%; pointer-events: none; transform: rotate(20deg); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 48'%3E%3Cpath d='M13 35C13 19 23 8 36 7c9-.5 17 2 22 6-7 0-12 4-14 10-1 4-1 8-1 12Z' fill='%23b8323e'/%3E%3Cpath d='M20 33c0-10 6-17 14-20' fill='none' stroke='%23d9535f' stroke-width='2.2' stroke-linecap='round' opacity='.8'/%3E%3Crect x='8' y='32' width='40' height='11' rx='5.5' fill='%23fff'/%3E%3Ccircle cx='58' cy='13' r='6' fill='%23fff'/%3E%3C/svg%3E") no-repeat center / contain; }
+
+/* string of lights hanging from the header: the wire and bulbs are static, the glow twinkles */
+.ds-xmas--lights .ds-header::before, .ds-xmas--lights .ds-header::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 16px; pointer-events: none; background-repeat: repeat-x; background-size: 54px 16px; background-position: 0 0; }
+.ds-xmas--lights .ds-header::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='16' viewBox='0 0 54 16'%3E%3Cpath d='M0 1.5Q9 5 18 1.5T36 1.5T54 1.5' fill='none' stroke='%232a5443' stroke-width='1.1'/%3E%3Cg fill='%232a5443'%3E%3Crect x='7.6' y='3' width='2.8' height='2.6' rx='.6'/%3E%3Crect x='25.6' y='3' width='2.8' height='2.6' rx='.6'/%3E%3Crect x='43.6' y='3' width='2.8' height='2.6' rx='.6'/%3E%3C/g%3E%3Cellipse cx='9' cy='9.4' rx='2.6' ry='3.6' fill='%23d9434f'/%3E%3Cellipse cx='27' cy='9.4' rx='2.6' ry='3.6' fill='%23e5b84f'/%3E%3Cellipse cx='45' cy='9.4' rx='2.6' ry='3.6' fill='%2347a06a'/%3E%3Cg fill='%23fff' opacity='.75'%3E%3Ccircle cx='8.1' cy='8' r='.7'/%3E%3Ccircle cx='26.1' cy='8' r='.7'/%3E%3Ccircle cx='44.1' cy='8' r='.7'/%3E%3C/g%3E%3C/svg%3E"); }
+.ds-xmas--lights .ds-header::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='54' height='16' viewBox='0 0 54 16'%3E%3Cdefs%3E%3CradialGradient id='r'%3E%3Cstop offset='0' stop-color='%23ff6b76' stop-opacity='.55'/%3E%3Cstop offset='1' stop-color='%23ff6b76' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='y'%3E%3Cstop offset='0' stop-color='%23ffd366' stop-opacity='.55'/%3E%3Cstop offset='1' stop-color='%23ffd366' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='g'%3E%3Cstop offset='0' stop-color='%2367d58f' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%2367d58f' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='9' cy='9.4' r='6.5' fill='url(%23r)'/%3E%3Ccircle cx='27' cy='9.4' r='6.5' fill='url(%23y)'/%3E%3Ccircle cx='45' cy='9.4' r='6.5' fill='url(%23g)'/%3E%3C/svg%3E"); animation: ds-twinkle 2.8s ease-in-out infinite; }
+@keyframes ds-twinkle { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+
+/* festive accents: red kickers, a snowflake before the hero kicker, gold spoon separator, candy-stripe section rules */
+.ds-xmas .ds-kicker { color: var(--ds-xmas-red); }
+.ds-xmas .ds-hero .ds-kicker::before { content: "❄ "; color: var(--ds-xmas-green); }
+.ds-xmas .is-style-spoon::before { content: "❄ ✦ ❄"; color: var(--ds-xmas-gold); }
+.ds-xmas .ds-section-head { border-bottom: 0; padding-bottom: .9rem; background: repeating-linear-gradient(135deg, var(--ds-xmas-berry) 0 7px, #fff 7px 14px, var(--ds-xmas-green) 14px 21px, #fff 21px 28px) left bottom / 100% 3px no-repeat; }
+.ds-xmas .wp-element-button:hover, .ds-xmas .wp-block-button__link:hover, .ds-xmas .wprm-recipe-jump:hover, .ds-xmas .wprm-recipe-print:hover { background-color: var(--ds-xmas-red) !important; }
+.ds-xmas .is-style-outline-pill .wp-block-button__link:hover { border-color: var(--ds-xmas-red); }
+.ds-xmas .wp-block-query-pagination .current { background: var(--ds-xmas-green); border-color: var(--ds-xmas-green); }
+
+/* snow caps: a white drift along the top of the hero card and of the footer */
+.ds-xmas .ds-hero, .ds-xmas .ds-footer { position: relative; }
+.ds-xmas .ds-hero::before, .ds-xmas .ds-footer::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 20px; z-index: 2; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='20' viewBox='0 0 180 20'%3E%3Cpath d='M0 0h180v10c-8 0-14 5-26 5s-16-9-28-9-16 10-28 10-16-9-28-9-16 9-28 9-16-9-28-9-10 3-14 3Z' fill='%23fff'/%3E%3C/svg%3E") repeat-x left top / 180px 20px; }
+
+/* evergreen footer with gold kickers */
+.ds-xmas .ds-footer.has-primary-background-color { background-color: var(--ds-xmas-pine) !important; }
+.ds-xmas .ds-footer__kicker { color: var(--ds-xmas-gold); }
+.ds-xmas .ds-footer .ds-footer__list a:hover, .ds-xmas .ds-footer .wp-block-categories-list a:hover, .ds-xmas .ds-footer__small a:hover { border-bottom-color: var(--ds-xmas-gold); }
+.ds-xmas .ds-footer__small a { border-bottom-color: var(--ds-xmas-gold) !important; }
+
+/* snow (assets/js/snow.js): fixed canvas behind the sticky header, never catches clicks */
+.ds-snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
+
+@media (max-width: 600px) { .ds-xmas-bar { font-size: .8rem; } }
+@media (prefers-reduced-motion: reduce) { .ds-xmas--lights .ds-header::before { animation: none; opacity: .7; } }
+@media print { .ds-snow, .ds-xmas-bar, .ds-xmas--lights .ds-header::before, .ds-xmas--lights .ds-header::after { display: none !important; } }
