@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.3
+Version: 0.13.4
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -575,6 +575,11 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 @media (max-width: 600px) { .ds-xmas-bar { font-size: .8rem; } }
 @media print { .ds-snow, .ds-xmas-bar { display: none !important; } }
 
+/* 0.13.4: a carousel track is the containing block of everything inside it. WordPress adds an absolutely positioned
+   screen-reader span to every "Get the recipe" link; without this the spans of the off-screen slides are placed
+   against <main>, escape the track's clipping and let the whole page scroll sideways (phones and desktop alike). */
+.ds-carousel .wp-block-post-template.ds-carousel__track { position: relative; }
+
 /* 0.13.0: the festive slider — the hero card slides through the festive recipes, arrows and dots below it.
    The photo is never touched: its own ratio on every screen (inline aspect-ratio, see dancingspoon_festive_image_ratio
    in functions.php), no crop, no overlay; each slide keeps its own height. */
@@ -587,13 +592,20 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
 .ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
 
-/* 0.13.0: two trees in the side margins — fixed, behind the content, only where a wide screen leaves room.
+/* 0.13.0: two trees in the side margins — behind the content, only where a wide screen leaves room.
    0.13.3: slim and tall — the tree fills the margin's width and grows to the full viewport height (xMidYMax meet),
-   brighter, and the baubles and the star blink in turn. */
+   brighter, and the baubles and the star blink in turn.
+   0.13.4: a sticky zero-height row just before the footer: pinned to the viewport bottom while scrolling, then it
+   rides up with the footer so the trees stand on the footer's snow line instead of sliding behind it. */
 .ds-xmas-trees { display: none; }
 @media (min-width: 1400px) {
-	.ds-xmas-trees { display: block; }
-	.ds-xmas-tree { position: fixed; top: 0; bottom: 0; z-index: -1; width: min(340px, calc((100vw - 1200px) / 2 - 10px)); opacity: .85; pointer-events: none; }
+	/* overflow-x clip (not hidden: the vertical axis must stay visible for the 100vh trees) keeps the swaying
+	   tree's corner from poking past the viewport and widening the page by a few pixels */
+	.ds-xmas-trees { display: block; position: sticky; bottom: 0; height: 0; width: 100%; z-index: -1; margin: 0 !important; pointer-events: none; overflow-x: clip; }
+	/* the row sits one block gap plus the footer's top margin above the footer's edge: the trees reach down past
+	   that, so at the end of the page the trunks stand on the footer's snow line (the trunk stays under the fold
+	   while the page scrolls) */
+	.ds-xmas-tree { position: absolute; bottom: calc(-1 * (var(--wp--style--block-gap, 1.25rem) + var(--wp--preset--spacing--70, 6rem))); height: 100vh; width: min(340px, calc((100vw - 1200px) / 2 - 10px)); opacity: .85; pointer-events: none; }
 	.ds-xmas-tree--left { left: 5px; }
 	.ds-xmas-tree--right { right: 5px; }
 	.ds-xmas-tree svg { display: block; width: 100%; height: 100%; transform-origin: 50% 100%; animation: ds-sway 10s ease-in-out infinite; }
