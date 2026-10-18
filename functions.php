@@ -643,14 +643,14 @@ function dancingspoon_nav_categories( array $parsed_block ): array {
 add_filter( 'render_block_data', 'dancingspoon_nav_categories' );
 
 /**
- * Christmas layout (Appearance → Customize → Dancing Spoon seasonal). One switch, on by default, turns the whole
+ * Christmas layout (Appearance → Customize → Dancing Spoon seasonal). One switch, off by default, turns the whole
  * look on: body class ds-xmas drives the CSS (Santa hat on the mark, snow caps on the hero and the evergreen
  * footer, red kickers), a greeting bar sits above the header,
  * assets/js/snow.js draws the snow, and the recipes in the festive category turn the top card into a slider
  * ("Festive recipes", patterns/hero.php). Off = the ordinary cream-and-plum site, nothing else changes.
  */
 function dancingspoon_xmas(): bool {
-	return (bool) get_theme_mod( 'dancingspoon_xmas', true );
+	return (bool) get_theme_mod( 'dancingspoon_xmas', false );
 }
 
 function dancingspoon_xmas_defaults(): array {
@@ -665,10 +665,10 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 	$d = dancingspoon_xmas_defaults();
 	$wp_customize->add_section(
 		'dancingspoon_seasonal',
-		array( 'title' => __( 'Dancing Spoon seasonal', 'dancingspoon' ), 'priority' => 33, 'description' => __( 'The Christmas look: the first switch turns all of it on or off, the rest tunes the details.', 'dancingspoon' ) )
+		array( 'title' => __( 'Dancing Spoon seasonal', 'dancingspoon' ), 'priority' => 33, 'description' => __( 'The Christmas look, off until you switch it on here: the first checkbox turns all of it on or off, the rest tunes the details.', 'dancingspoon' ) )
 	);
 	$bool = fn( $v ) => (bool) $v;
-	$wp_customize->add_setting( 'dancingspoon_xmas', array( 'default' => true, 'sanitize_callback' => $bool ) );
+	$wp_customize->add_setting( 'dancingspoon_xmas', array( 'default' => false, 'sanitize_callback' => $bool ) );
 	$wp_customize->add_control(
 		'dancingspoon_xmas',
 		array(
