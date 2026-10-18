@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.1
+Version: 0.13.2
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -559,9 +559,9 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-xmas .is-style-outline-pill .wp-block-button__link:hover { border-color: var(--ds-xmas-red); }
 .ds-xmas .wp-block-query-pagination .current { background: var(--ds-xmas-green); border-color: var(--ds-xmas-green); }
 
-/* snow caps: a white drift along the top of the hero card and of the footer */
-.ds-xmas .ds-hero, .ds-xmas .ds-footer { position: relative; }
-.ds-xmas .ds-hero::before, .ds-xmas .ds-footer::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 20px; z-index: 2; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='20' viewBox='0 0 180 20'%3E%3Cpath d='M0 0h180v10c-8 0-14 5-26 5s-16-9-28-9-16 10-28 10-16-9-28-9-16 9-28 9-16-9-28-9-10 3-14 3Z' fill='%23fff'/%3E%3C/svg%3E") repeat-x left top / 180px 20px; }
+/* snow cap: a white drift along the top of the footer (never over a photo) */
+.ds-xmas .ds-footer { position: relative; }
+.ds-xmas .ds-footer::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 20px; z-index: 2; pointer-events: none; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='20' viewBox='0 0 180 20'%3E%3Cpath d='M0 0h180v10c-8 0-14 5-26 5s-16-9-28-9-16 10-28 10-16-9-28-9-16 9-28 9-16-9-28-9-10 3-14 3Z' fill='%23fff'/%3E%3C/svg%3E") repeat-x left top / 180px 20px; }
 
 /* evergreen footer with gold kickers */
 .ds-xmas .ds-footer.has-primary-background-color { background-color: var(--ds-xmas-pine) !important; }
@@ -575,27 +575,17 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 @media (max-width: 600px) { .ds-xmas-bar { font-size: .8rem; } }
 @media print { .ds-snow, .ds-xmas-bar { display: none !important; } }
 
-/* 0.13.0: the festive slider — the hero card slides through the tagged recipes, arrows and dots below it */
-.ds-hero-slider .wp-block-post-template.ds-carousel__track { padding-bottom: .5rem; }
+/* 0.13.0: the festive slider — the hero card slides through the festive recipes, arrows and dots below it.
+   The photo is never touched: its own ratio on every screen (inline aspect-ratio, see dancingspoon_festive_image_ratio
+   in functions.php), no crop, no overlay; each slide keeps its own height. */
+.ds-hero-slider .wp-block-post-template.ds-carousel__track { padding-bottom: .5rem; align-items: flex-start; }
 .ds-hero-slider .ds-carousel__track > li { flex: 0 0 100% !important; }
-.ds-hero-slider .ds-hero > .wp-block-columns { flex: 1 1 auto; }
+.ds-hero-slider .ds-hero .wp-block-post-featured-image img { height: auto; object-fit: contain; }
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }
 .ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
 .ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
-/* side by side: the photo fills the card's full height (the longest title sets it), cropped as needed */
-@media (min-width: 782px) {
-	.ds-hero-slider .ds-hero .wp-block-column:first-child { align-self: stretch; }
-	.ds-hero-slider .ds-hero .wp-block-post-featured-image { position: relative; height: 100%; min-height: clamp(300px, 34vw, 430px); margin: 0; }
-	.ds-hero-slider .ds-hero .wp-block-post-featured-image a { position: absolute; inset: 0; display: block; }
-	.ds-hero-slider .ds-hero .wp-block-post-featured-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-}
-/* phones and tablets: the festive photo is shown whole at its own ratio (inline aspect-ratio, see
-   dancingspoon_festive_image_ratio in functions.php), never cropped to the 16:11 window */
-@media (max-width: 781px) {
-	.ds-hero-slider .ds-hero .wp-block-post-featured-image img { height: auto; }
-}
 
 /* 0.13.0: two trees in the side margins — fixed at the bottom, behind the content, only where a wide screen leaves room */
 .ds-xmas-trees { display: none; }

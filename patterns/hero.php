@@ -8,11 +8,10 @@
  */
 $festive  = dancingspoon_festive_ids();
 $slider   = count( $festive ) > 1;
-$extra    = $slider ? ' ds-carousel ds-hero-slider' : '';
-$autoplay = get_theme_mod( 'dancingspoon_xmas_autoplay', true ) ? '1' : '0';
+$extra    = $slider ? ' ds-carousel ds-hero-slider' : '';   // scrolled by the reader only: no autoplay
 ?>
 <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":""},"align":"wide","className":"ds-hero-query<?php echo esc_attr( $extra ); ?>"} -->
-<div class="wp-block-query alignwide ds-hero-query<?php echo esc_attr( $extra ); ?>"<?php echo $slider ? ' data-autoplay="' . esc_attr( $autoplay ) . '"' : ''; ?>>
+<div class="wp-block-query alignwide ds-hero-query<?php echo esc_attr( $extra ); ?>">
 	<!-- wp:post-template {"layout":{"type":"default"}<?php echo $slider ? ',"className":"ds-carousel__track"' : ''; ?>} -->
 		<!-- wp:group {"className":"ds-hero ds-card","backgroundColor":"surface","layout":{"type":"default"}} -->
 		<div class="wp-block-group ds-hero ds-card has-surface-background-color has-background">
@@ -20,7 +19,7 @@ $autoplay = get_theme_mod( 'dancingspoon_xmas_autoplay', true ) ? '1' : '0';
 			<div class="wp-block-columns are-vertically-aligned-center">
 				<!-- wp:column {"verticalAlignment":"center","width":"58%"} -->
 				<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:58%">
-					<?php // the slider serves the uncropped photo (shown whole on phones); the single hero keeps the 16:10 crop ?>
+					<?php // the slider serves the uncropped photo, shown whole at its own ratio; the single hero keeps the 16:10 crop ?>
 					<!-- wp:post-featured-image {"isLink":true,"sizeSlug":"<?php echo $festive ? 'large' : 'dancingspoon-hero'; ?>","style":{"border":{"radius":"0"}}} /-->
 				</div>
 				<!-- /wp:column -->

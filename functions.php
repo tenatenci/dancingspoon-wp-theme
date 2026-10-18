@@ -727,11 +727,6 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 		'dancingspoon_xmas_count',
 		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Recipes in the festive slider (at most)', 'dancingspoon' ), 'type' => 'select', 'choices' => array( 3 => '3', 6 => '6', 9 => '9' ) )
 	);
-	$wp_customize->add_setting( 'dancingspoon_xmas_autoplay', array( 'default' => true, 'sanitize_callback' => $bool ) );
-	$wp_customize->add_control(
-		'dancingspoon_xmas_autoplay',
-		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Festive slider scrolls by itself (every 5 s)', 'dancingspoon' ), 'type' => 'checkbox' )
-	);
 }
 add_action( 'customize_register', 'dancingspoon_customize_seasonal' );
 
@@ -808,12 +803,11 @@ function dancingspoon_festive_ids(): array {
 }
 
 /**
- * The slider's photos carry their own ratio inline (aspect-ratio: W / H from the attachment's width and height).
- * Phones show the photo whole, so the theme's 16:11 crop must not apply there; but a plain "aspect-ratio: auto"
+ * The slider's photos carry their own ratio inline (aspect-ratio: W / H from the attachment's width and height),
+ * so they show whole on every screen. The theme's 16:11 hero crop must not apply, but a plain "aspect-ratio: auto"
  * would also drop the ratio the browser derives from the width/height attributes, and WordPress's lazy-loading
  * markup (sizes="auto") puts such an image under size containment with a 3000 × 1500 placeholder: the photo
- * would render 1500 px tall. An explicit ratio sidesteps both. The side-by-side layout sets an explicit height,
- * which wins over the ratio, so desktop stays a filled, cropped column.
+ * would render 1500 px tall. An explicit ratio sidesteps both.
  */
 function dancingspoon_festive_image_ratio( string $content, array $block, WP_Block $instance ): string {
 	// only the slider's images: the hero pattern asks for the "large" size when festive recipes exist, and the
