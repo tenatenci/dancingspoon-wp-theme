@@ -816,7 +816,9 @@ function dancingspoon_festive_ids(): array {
  * which wins over the ratio, so desktop stays a filled, cropped column.
  */
 function dancingspoon_festive_image_ratio( string $content, array $block, WP_Block $instance ): string {
-	if ( 1 !== (int) ( $instance->context['queryId'] ?? 0 ) || ! dancingspoon_festive_ids() ) {
+	// only the slider's images: the hero pattern asks for the "large" size when festive recipes exist, and the
+	// post must be one of them (the single template's hero keeps its 16:9 crop)
+	if ( 'large' !== ( $block['attrs']['sizeSlug'] ?? '' ) || ! in_array( (int) ( $instance->context['postId'] ?? 0 ), dancingspoon_festive_ids(), true ) ) {
 		return $content;
 	}
 	$p = new WP_HTML_Tag_Processor( $content );
