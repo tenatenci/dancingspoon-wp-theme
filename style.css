@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.2
+Version: 0.13.3
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -587,22 +587,25 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-carousel__dot:hover { background: var(--wp--preset--color--accent); }
 .ds-carousel__dot[aria-current="true"] { background: var(--wp--preset--color--primary); transform: scale(1.25); }
 
-/* 0.13.0: two trees in the side margins — fixed at the bottom, behind the content, only where a wide screen leaves room */
+/* 0.13.0: two trees in the side margins — fixed, behind the content, only where a wide screen leaves room.
+   0.13.3: slim and tall — the tree fills the margin's width and grows to the full viewport height (xMidYMax meet),
+   brighter, and the baubles and the star blink in turn. */
 .ds-xmas-trees { display: none; }
 @media (min-width: 1400px) {
 	.ds-xmas-trees { display: block; }
-	.ds-xmas-tree { position: fixed; bottom: 0; z-index: -1; width: min(220px, calc((100vw - 1200px) / 2 - 28px)); opacity: .6; pointer-events: none; }
-	.ds-xmas-tree--left { left: 12px; }
-	.ds-xmas-tree--right { right: 12px; }
-	.ds-xmas-tree svg { display: block; width: 100%; height: auto; transform-origin: 50% 100%; animation: ds-sway 9s ease-in-out infinite; }
-	.ds-xmas-tree--right svg { animation-delay: -4.5s; }
+	.ds-xmas-tree { position: fixed; top: 0; bottom: 0; z-index: -1; width: min(340px, calc((100vw - 1200px) / 2 - 10px)); opacity: .85; pointer-events: none; }
+	.ds-xmas-tree--left { left: 5px; }
+	.ds-xmas-tree--right { right: 5px; }
+	.ds-xmas-tree svg { display: block; width: 100%; height: 100%; transform-origin: 50% 100%; animation: ds-sway 10s ease-in-out infinite; }
+	.ds-xmas-tree--right svg { animation-delay: -5s; }
 }
-@keyframes ds-sway { 0%, 100% { transform: rotate(-1.3deg); } 50% { transform: rotate(1.3deg); } }
-.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-glow 2.8s ease-in-out infinite; }
-.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.9s; }
-.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.8s; }
-.ds-xmas-tree__ball:nth-of-type(5n) { animation-duration: 3.6s; }
-.ds-xmas-tree__star { animation-duration: 3.8s; }
-@keyframes ds-glow { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+@keyframes ds-sway { 0%, 100% { transform: rotate(-1deg); } 50% { transform: rotate(1deg); } }
+.ds-xmas-tree__ball, .ds-xmas-tree__star { animation: ds-blink 1.8s ease-in-out infinite; }
+.ds-xmas-tree__ball:nth-of-type(2n) { animation-delay: -.6s; }
+.ds-xmas-tree__ball:nth-of-type(3n) { animation-delay: -1.2s; animation-duration: 2.2s; }
+.ds-xmas-tree__ball:nth-of-type(4n+1) { animation-duration: 1.5s; }
+.ds-xmas-tree__ball:nth-of-type(5n+2) { animation-delay: -.3s; }
+.ds-xmas-tree__star { animation-duration: 2.6s; }
+@keyframes ds-blink { 0%, 100% { opacity: .12; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .ds-xmas-tree svg, .ds-xmas-tree__ball, .ds-xmas-tree__star { animation: none; } }
 @media print { .ds-xmas-trees { display: none !important; } }

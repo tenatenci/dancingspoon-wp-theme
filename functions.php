@@ -830,24 +830,15 @@ function dancingspoon_festive_image_ratio( string $content, array $block, WP_Blo
 add_filter( 'render_block_core/post-featured-image', 'dancingspoon_festive_image_ratio', 10, 3 );
 
 /**
- * Two trees in the side margins (fixed, behind the content, only where a wide screen leaves room). The star and
- * the baubles glow in turn and the tree sways a degree either way; all of it still for reduced motion.
+ * Two trees in the side margins (fixed, behind the content, only where a wide screen leaves room), as tall as the
+ * margin's width allows up to the full viewport height. The star and the baubles blink in turn and the tree sways
+ * a degree either way; all of it still for reduced motion.
  */
 function dancingspoon_xmas_trees(): void {
 	if ( ! dancingspoon_xmas() || ! get_theme_mod( 'dancingspoon_xmas_trees', true ) ) {
 		return;
 	}
-	$tree = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 180" aria-hidden="true" focusable="false">'
-		. '<rect x="52" y="148" width="16" height="30" rx="3" fill="#6b4a33"/>'
-		. '<path d="M60 64 8 156h104Z" fill="#2a5443"/><path d="M60 36 20 116h80Z" fill="#31634f"/><path d="M60 12 32 78h56Z" fill="#3a7059"/>'
-		. '<g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".55"><path d="M32 78q7-5 14 0t14 0 14 0 14 0"/><path d="M20 116q8-5 16 0t16 0 16 0 16 0 16 0"/><path d="M8 156q8.7-5 17.3 0t17.3 0 17.3 0 17.3 0 17.3 0 17.3 0"/></g>'
-		. '<path class="ds-xmas-tree__star" d="M60 2 62.2 7.9 68.6 8.2 63.6 12.2 65.3 18.3 60 14.8 54.7 18.3 56.4 12.2 51.4 8.2 57.8 7.9Z" fill="#e5c266"/>'
-		. '<g class="ds-xmas-tree__balls">'
-		. '<circle class="ds-xmas-tree__ball" cx="48" cy="60" r="4" fill="#c43c48"/><circle class="ds-xmas-tree__ball" cx="72" cy="56" r="4" fill="#e5c266"/>'
-		. '<circle class="ds-xmas-tree__ball" cx="40" cy="100" r="4" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="64" cy="92" r="4" fill="#f3e9d8"/>'
-		. '<circle class="ds-xmas-tree__ball" cx="84" cy="104" r="4" fill="#c43c48"/><circle class="ds-xmas-tree__ball" cx="30" cy="140" r="4" fill="#f3e9d8"/>'
-		. '<circle class="ds-xmas-tree__ball" cx="56" cy="134" r="4" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="90" cy="142" r="4" fill="#c43c48"/>'
-		. '</g></svg>';
+	$tree = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 320" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><rect x="52" y="294" width="16" height="26" rx="3" fill="#6b4a33"/><path d="M60 160 6 300h108Z" fill="#2a5443"/><path d="M60 116 14 244h92Z" fill="#2f5d4a"/><path d="M60 76 22 190h76Z" fill="#346650"/><path d="M60 42 30 140h60Z" fill="#3a7059"/><path d="M60 14 38 92h44Z" fill="#40795f"/><g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"><path d="M6 300q6.75-4 13.5 0t13.5 0t13.5 0t13.5 0t13.5 0t13.5 0t13.5 0t13.5 0"/><path d="M14 244q6.57-4 13.14 0t13.14 0t13.14 0t13.14 0t13.14 0t13.14 0t13.14 0"/><path d="M22 190q6.33-4 12.67 0t12.67 0t12.67 0t12.67 0t12.67 0t12.67 0"/><path d="M30 140q6.0-4 12.0 0t12.0 0t12.0 0t12.0 0t12.0 0"/><path d="M38 92q5.5-4 11.0 0t11.0 0t11.0 0t11.0 0"/></g><path class="ds-xmas-tree__star" d="M60 2 62.2 7.9 68.6 8.2 63.6 12.2 65.3 18.3 60 14.8 54.7 18.3 56.4 12.2 51.4 8.2 57.8 7.9Z" fill="#e5c266"/><g class="ds-xmas-tree__balls"><circle class="ds-xmas-tree__ball" cx="60" cy="70" r="4.5" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="52" cy="122" r="4.5" fill="#d9434f"/><circle class="ds-xmas-tree__ball" cx="70" cy="128" r="4.5" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="40" cy="172" r="4.5" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="62" cy="160" r="4.5" fill="#f3e9d8"/><circle class="ds-xmas-tree__ball" cx="82" cy="176" r="4.5" fill="#d9434f"/><circle class="ds-xmas-tree__ball" cx="30" cy="226" r="4.5" fill="#f3e9d8"/><circle class="ds-xmas-tree__ball" cx="54" cy="214" r="4.5" fill="#d9434f"/><circle class="ds-xmas-tree__ball" cx="78" cy="230" r="4.5" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="94" cy="220" r="4.5" fill="#f3e9d8"/><circle class="ds-xmas-tree__ball" cx="22" cy="282" r="4.5" fill="#e5c266"/><circle class="ds-xmas-tree__ball" cx="46" cy="270" r="4.5" fill="#f3e9d8"/><circle class="ds-xmas-tree__ball" cx="70" cy="286" r="4.5" fill="#d9434f"/><circle class="ds-xmas-tree__ball" cx="100" cy="290" r="4.5" fill="#e5c266"/></g></svg>';
 	echo '<div class="ds-xmas-trees" aria-hidden="true"><div class="ds-xmas-tree ds-xmas-tree--left">' . $tree . '</div><div class="ds-xmas-tree ds-xmas-tree--right">' . $tree . '</div></div>' . "\n";
 }
 add_action( 'wp_footer', 'dancingspoon_xmas_trees' );
