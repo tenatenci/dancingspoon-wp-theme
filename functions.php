@@ -279,6 +279,12 @@ add_filter( 'query_loop_block_query_vars', 'dancingspoon_front_queries', 10, 2 )
  * The hero kicker, in step with the Customizer choice.
  */
 function dancingspoon_hero_kicker(): string {
+	if ( dancingspoon_xmas() ) {
+		$festive = trim( (string) get_theme_mod( 'dancingspoon_xmas_kicker', dancingspoon_xmas_defaults()['kicker'] ) );
+		if ( '' !== $festive ) {
+			return $festive;
+		}
+	}
 	$mode = get_theme_mod( 'dancingspoon_hero_mode', 'month' );
 	$post = (int) get_theme_mod( 'dancingspoon_hero_post', 0 );
 	if ( 'month' === $mode && $post && 'publish' === get_post_status( $post ) ) {
@@ -627,8 +633,8 @@ add_filter( 'render_block_data', 'dancingspoon_nav_categories' );
 
 /**
  * Christmas layout (Appearance → Customize → Dancing Spoon seasonal). One switch, on by default, turns the whole
- * look on: body class ds-xmas drives the CSS (Santa hat on the mark, string of lights under the header, candy-stripe
- * section rules, snow caps on the hero and the evergreen footer), a greeting bar sits above the header and
+ * look on: body class ds-xmas drives the CSS (Santa hat on the mark, snow caps on the hero and the evergreen
+ * footer, red kickers), a greeting bar sits above the header, the hero kicker reads "Festive recipe" and
  * assets/js/snow.js draws the snow. Off = the ordinary cream-and-plum site, nothing else changes.
  */
 function dancingspoon_xmas(): bool {
@@ -637,8 +643,8 @@ function dancingspoon_xmas(): bool {
 
 function dancingspoon_xmas_defaults(): array {
 	return array(
-		'greeting'  => __( 'Merry Christmas from the Dancing Spoon kitchen', 'dancingspoon' ),
-		'link_text' => __( 'Festive recipes', 'dancingspoon' ),
+		'greeting' => __( 'Merry Christmas from the Dancing Spoon kitchen', 'dancingspoon' ),
+		'kicker'   => __( 'Festive recipe', 'dancingspoon' ),
 	);
 }
 
@@ -655,7 +661,7 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 		array(
 			'section'     => 'dancingspoon_seasonal',
 			'label'       => __( 'Christmas layout', 'dancingspoon' ),
-			'description' => __( 'Santa hat on the logo, candy-stripe section rules, snow caps on the hero and an evergreen footer.', 'dancingspoon' ),
+			'description' => __( 'Santa hat on the logo, snow caps on the hero and an evergreen footer, the greeting bar.', 'dancingspoon' ),
 			'type'        => 'checkbox',
 		)
 	);
@@ -669,49 +675,25 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 			'type'        => 'checkbox',
 		)
 	);
-	$wp_customize->add_setting( 'dancingspoon_xmas_lights', array( 'default' => true, 'sanitize_callback' => $bool ) );
-	$wp_customize->add_control(
-		'dancingspoon_xmas_lights',
-		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'String of lights under the header', 'dancingspoon' ), 'type' => 'checkbox' )
-	);
 	$wp_customize->add_setting( 'dancingspoon_xmas_greeting', array( 'default' => $d['greeting'], 'sanitize_callback' => 'sanitize_text_field' ) );
 	$wp_customize->add_control(
 		'dancingspoon_xmas_greeting',
 		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Greeting bar above the header', 'dancingspoon' ), 'description' => __( 'Empty = no bar.', 'dancingspoon' ), 'type' => 'text' )
 	);
-	$wp_customize->add_setting( 'dancingspoon_xmas_link_text', array( 'default' => $d['link_text'], 'sanitize_callback' => 'sanitize_text_field' ) );
+	$wp_customize->add_setting( 'dancingspoon_xmas_kicker', array( 'default' => $d['kicker'], 'sanitize_callback' => 'sanitize_text_field' ) );
 	$wp_customize->add_control(
-		'dancingspoon_xmas_link_text',
-		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Link in the bar', 'dancingspoon' ), 'description' => __( 'Empty = no link.', 'dancingspoon' ), 'type' => 'text' )
-	);
-	$choices = array( 0 => __( '— the recipe index —', 'dancingspoon' ) );
-	$terms   = get_terms( array( 'taxonomy' => 'category', 'hide_empty' => false, 'exclude' => array( (int) get_option( 'default_category' ) ) ) );
-	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
-		$choices[ $term->term_id ] = $term->name;
-	}
-	$wp_customize->add_setting( 'dancingspoon_xmas_category', array( 'default' => 0, 'sanitize_callback' => 'absint' ) );
-	$wp_customize->add_control(
-		'dancingspoon_xmas_category',
-		array(
-			'section'     => 'dancingspoon_seasonal',
-			'label'       => __( 'The link opens', 'dancingspoon' ),
-			'description' => __( 'A category for the festive recipes (a "Christmas" category, say) or the recipe index.', 'dancingspoon' ),
-			'type'        => 'select',
-			'choices'     => $choices,
-		)
+		'dancingspoon_xmas_kicker',
+		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Label over the top recipe', 'dancingspoon' ), 'description' => __( 'Replaces "Recipe of the month" while the Christmas layout is on. Empty = the usual label.', 'dancingspoon' ), 'type' => 'text' )
 	);
 }
 add_action( 'customize_register', 'dancingspoon_customize_seasonal' );
 
 /**
- * body.ds-xmas carries the look; ds-xmas--lights the string of lights.
+ * body.ds-xmas carries the look.
  */
 function dancingspoon_xmas_body_class( array $classes ): array {
 	if ( dancingspoon_xmas() ) {
 		$classes[] = 'ds-xmas';
-		if ( get_theme_mod( 'dancingspoon_xmas_lights', true ) ) {
-			$classes[] = 'ds-xmas--lights';
-		}
 	}
 	return $classes;
 }
@@ -730,14 +712,7 @@ function dancingspoon_xmas_bar( string $content, array $block ): string {
 	if ( '' === $greeting ) {
 		return $content;
 	}
-	$link = trim( (string) get_theme_mod( 'dancingspoon_xmas_link_text', $d['link_text'] ) );
-	$cat  = (int) get_theme_mod( 'dancingspoon_xmas_category', 0 );
-	$url  = $cat && get_term( $cat, 'category' ) instanceof WP_Term ? get_category_link( $cat ) : home_url( '/recipes/' );
 	$tree = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 8 8.5h2.2L6.5 14h2.3L5 19.5h14L15.2 14h2.3L13.8 8.5H16Z"/><path d="M12 19.5V22"/></svg>';
-	$bar  = '<div class="ds-xmas-bar"><p class="ds-xmas-bar__text"><span class="ds-xmas-bar__icon">' . $tree . '</span><span>' . esc_html( $greeting ) . '</span>';
-	if ( '' !== $link ) {
-		$bar .= '<a class="ds-xmas-bar__link" href="' . esc_url( $url ) . '">' . esc_html( $link ) . ' →</a>';
-	}
-	return $bar . '</p></div>' . $content;
+	return '<div class="ds-xmas-bar"><p class="ds-xmas-bar__text"><span class="ds-xmas-bar__icon">' . $tree . '</span><span>' . esc_html( $greeting ) . '</span></p></div>' . $content;
 }
 add_filter( 'render_block_core/template-part', 'dancingspoon_xmas_bar', 10, 2 );

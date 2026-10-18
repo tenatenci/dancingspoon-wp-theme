@@ -7,8 +7,8 @@ site; `deploy-prod` (Run workflow, release tag) deploys a release to dancingspoo
 after the `prod` environment's reviewers approve.
 
 - `Version:` in `style.css` is the only version knob — bump it to release.
-- Christmas look (snow, Santa hat on the mark, lights under the header, greeting bar, evergreen footer):
-  Appearance → Customize → Dancing Spoon seasonal. On by default; the first switch turns all of it off.
+- Christmas look (snow, Santa hat on the mark, greeting bar, "Festive recipe" over the top card, evergreen
+  footer): Appearance → Customize → Dancing Spoon seasonal. On by default; the first switch turns all of it off.
 - How it works, the network path and the first-time setup:
   https://wordpress-plugin-delivery-1c5177.pages.ops.utr.utrzone.local/latest/
 

@@ -10,15 +10,15 @@
 	if (!ctx) return;
 	var flakes = [], w = 0, h = 0, raf = 0, last = 0;
 	var make = function (anywhere) {
-		var r = 1 + Math.random() * 2.4;
-		return { x: Math.random() * w, y: anywhere ? Math.random() * h : -6, r: r, v: 16 + r * 13, a: .4 + Math.random() * .5, p: Math.random() * Math.PI * 2, s: .5 + Math.random() };
+		var r = 1.4 + Math.random() * 2.8;
+		return { x: Math.random() * w, y: anywhere ? Math.random() * h : -8, r: r, v: 16 + r * 12, a: .45 + Math.random() * .5, p: Math.random() * Math.PI * 2, s: .5 + Math.random() };
 	};
 	var size = function () {
 		var dpr = Math.min(window.devicePixelRatio || 1, 2);
 		w = window.innerWidth; h = window.innerHeight;
 		canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-		var n = Math.min(160, Math.round(w * h / 14000));
+		var n = Math.min(260, Math.round(w * h / 8000));
 		while (flakes.length < n) flakes.push(make(true));
 		flakes.length = n;
 	};
@@ -30,7 +30,7 @@
 		for (var i = 0; i < flakes.length; i++) {
 			var f = flakes[i];
 			f.p += dt * f.s; f.y += f.v * dt; f.x += Math.sin(f.p) * 14 * dt;
-			if (f.y > h + 6) { flakes[i] = f = make(false); }
+			if (f.y > h + 8) { flakes[i] = f = make(false); }
 			if (f.x < -8) f.x = w + 8; else if (f.x > w + 8) f.x = -8;
 			ctx.globalAlpha = f.a;
 			ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
