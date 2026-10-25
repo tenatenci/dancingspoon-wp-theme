@@ -60,7 +60,7 @@ $owner   = trim( (string) get_theme_mod( 'dancingspoon_id_owner_name', '' ) );
 				<p><?php esc_html_e( 'Tag @dancing.1spoon — your plates make my day. Quick questions work well as a DM, too.', 'dancingspoon' ); ?></p>
 				<!-- /wp:paragraph -->
 				<!-- wp:social-links {"openInNewTab":true,"iconColor":"primary","iconColorValue":"#542a35","size":"has-normal-icon-size","className":"is-style-logos-only ds-social"} -->
-				<ul class="wp-block-social-links has-normal-icon-size has-icon-color is-style-logos-only ds-social"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
+				<ul class="wp-block-social-links has-normal-icon-size has-icon-color is-style-logos-only ds-social"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--><!-- wp:social-link {"url":"https://www.youtube.com/@tenatomasevic6650","service":"youtube","label":"YouTube"} /--></ul>
 				<!-- /wp:social-links -->
 			</div>
 			<!-- /wp:group -->

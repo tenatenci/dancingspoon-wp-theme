@@ -287,6 +287,23 @@ function dancingspoon_front_queries( array $query, WP_Block $block ): array {
 add_filter( 'query_loop_block_query_vars', 'dancingspoon_front_queries', 10, 2 );
 
 /**
+ * Archive, search and blog-index pages: 12 recipes a page, so the three-column grid always ends
+ * on a full row. The query blocks in those templates inherit the main query, which takes its
+ * count from Settings → Reading (10 by default) and ignores the block's own perPage.
+ */
+const DANCINGSPOON_ARCHIVE_PER_PAGE = 12;
+
+function dancingspoon_archive_per_page( WP_Query $query ): void {
+	if ( is_admin() || ! $query->is_main_query() || $query->is_feed() ) {
+		return;
+	}
+	if ( $query->is_archive() || $query->is_search() || $query->is_home() ) {
+		$query->set( 'posts_per_page', DANCINGSPOON_ARCHIVE_PER_PAGE );
+	}
+}
+add_action( 'pre_get_posts', 'dancingspoon_archive_per_page' );
+
+/**
  * The hero kicker, in step with the Customizer choice.
  */
 function dancingspoon_hero_kicker(): string {

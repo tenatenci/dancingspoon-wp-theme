@@ -15,7 +15,7 @@
 	<p class="has-text-align-center"><?php esc_html_e( 'Follow along for the behind-the-scenes, the fails and the first look at what is coming out of the oven.', 'dancingspoon' ); ?></p>
 	<!-- /wp:paragraph -->
 	<!-- wp:social-links {"openInNewTab":true,"iconColor":"base","iconColorValue":"#f8f5ef","iconBackgroundColor":"primary","iconBackgroundColorValue":"#542a35","size":"has-large-icon-size","layout":{"type":"flex","justifyContent":"center"}} -->
-	<ul class="wp-block-social-links has-large-icon-size has-icon-color has-icon-background-color"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--></ul>
+	<ul class="wp-block-social-links has-large-icon-size has-icon-color has-icon-background-color"><!-- wp:social-link {"url":"https://www.instagram.com/dancing.1spoon/","service":"instagram","label":"Instagram"} /--><!-- wp:social-link {"url":"https://www.tiktok.com/@dancing.1spoon","service":"tiktok","label":"TikTok"} /--><!-- wp:social-link {"url":"https://de.pinterest.com/tenatomasevic/","service":"pinterest","label":"Pinterest"} /--><!-- wp:social-link {"url":"https://www.youtube.com/@tenatomasevic6650","service":"youtube","label":"YouTube"} /--></ul>
 	<!-- /wp:social-links -->
 </div>
 <!-- /wp:group -->
