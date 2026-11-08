@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.13.8
+Version: 0.14.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -526,14 +526,21 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 	.ds-cat__img--initial { font-size: 2rem; }
 	.ds-cat__name { font-size: .8125rem; }
 }
-.ds-header .ds-nav-more .wp-block-navigation__submenu-container { background: var(--wp--preset--color--base); border: 1px solid var(--wp--preset--color--border); border-radius: var(--ds-radius); padding: .4rem 0; min-width: 180px; }
-.ds-header .ds-nav-more .wp-block-navigation__submenu-container .wp-block-navigation-item__content { padding: .45rem 1rem; }
-.ds-header .ds-nav-more .wp-block-navigation-submenu__toggle svg { width: 10px; height: 10px; }
-/* in the overlay menu "More" is not a dropdown: its items continue the plain list */
-.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more { display: contents; }
-.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more > .wp-block-navigation-item__content, .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more > .wp-block-navigation__submenu-icon { display: none; }
-.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more .wp-block-navigation__submenu-container { display: contents; background: none; border: 0; padding: 0; min-width: 0; }
-.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-more .wp-block-navigation__submenu-container .wp-block-navigation-item__content { padding: 0; }
+/* 0.14.0: up to 8 categories stay on one line from tablet width up (the row spans the wide width, tiles shrink to fit); more than 8 wrap */
+@media (min-width: 782px) {
+	.ds-cats:not(.ds-cats--wrap) { flex-wrap: nowrap; gap: clamp(1rem, 2.5vw, 2rem); }
+	.ds-cats:not(.ds-cats--wrap) .ds-cat { flex: 0 1 120px; min-width: 0; }
+	.ds-cats:not(.ds-cats--wrap) .ds-cat__link { width: 100%; }
+	.ds-cats:not(.ds-cats--wrap) .ds-cat__img { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+}
+.ds-header .ds-nav-cats .wp-block-navigation__submenu-container { background: var(--wp--preset--color--base); border: 1px solid var(--wp--preset--color--border); border-radius: var(--ds-radius); padding: .4rem 0; min-width: 180px; }
+.ds-header .ds-nav-cats .wp-block-navigation__submenu-container .wp-block-navigation-item__content { padding: .45rem 1rem; }
+.ds-header .ds-nav-cats .wp-block-navigation-submenu__toggle svg { width: 10px; height: 10px; }
+/* in the overlay menu "Categories" is not a dropdown: its items continue the plain list */
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-cats { display: contents; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-cats > .wp-block-navigation-item__content, .ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-cats > .wp-block-navigation__submenu-icon { display: none; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-cats .wp-block-navigation__submenu-container { display: contents; background: none; border: 0; padding: 0; min-width: 0; }
+.ds-header .wp-block-navigation__responsive-container.is-menu-open .ds-nav-cats .wp-block-navigation__submenu-container .wp-block-navigation-item__content { padding: 0; }
 
 /* ======================================================================
    0.12.0 — Christmas layout (Customize → Dancing Spoon seasonal; body.ds-xmas)

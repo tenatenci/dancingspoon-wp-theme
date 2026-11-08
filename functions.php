@@ -617,9 +617,10 @@ function dancingspoon_categories( string $orderby = 'name' ): array {
 }
 
 /**
- * Header menu: the "Categories" placeholder link in parts/header.html (class ds-nav-categories) becomes one link
- * per category, so a new category shows up in the menu as soon as it has a recipe. Past five, all but four go into
- * a "More" dropdown so the one-line desktop menu keeps fitting.
+ * Header menu: the "Categories" placeholder link in parts/header.html (class ds-nav-categories) becomes one
+ * "Categories" dropdown holding a link per category, so a new category shows up in the menu as soon as it has a
+ * recipe and the one-line desktop menu stays Home · Recipes · Categories · About · Contact however many there are.
+ * In the mobile overlay the dropdown's items continue the plain list (style.css, .ds-nav-cats).
  */
 function dancingspoon_nav_categories( array $parsed_block ): array {
 	if ( 'core/navigation' !== ( $parsed_block['blockName'] ?? '' ) || empty( $parsed_block['innerBlocks'] ) ) {
@@ -637,21 +638,20 @@ function dancingspoon_nav_categories( array $parsed_block ): array {
 		'innerContent' => array(),
 	);
 	$links = array_map( $link, dancingspoon_categories() );
-	$top   = 4;
-	if ( count( $links ) > $top + 1 ) {
-		$rest  = array_slice( $links, $top );
-		$links = array_slice( $links, 0, $top );
-		$links[] = array(
+	$menu  = array();
+	if ( $links ) {
+		$slot   = current( array_filter( $parsed_block['innerBlocks'], $is_slot ) );
+		$menu[] = array(
 			'blockName'    => 'core/navigation-submenu',
-			'attrs'        => array( 'label' => __( 'More', 'dancingspoon' ), 'url' => home_url( '/recipes/' ), 'className' => 'ds-nav-more' ),
-			'innerBlocks'  => $rest,
+			'attrs'        => array( 'label' => $slot['attrs']['label'] ?? __( 'Categories', 'dancingspoon' ), 'url' => home_url( '/recipes/' ), 'className' => 'ds-nav-cats' ),
+			'innerBlocks'  => $links,
 			'innerHTML'    => '',
-			'innerContent' => array_fill( 0, count( $rest ), null ),
+			'innerContent' => array_fill( 0, count( $links ), null ),
 		);
 	}
 	$inner = array();
 	foreach ( $parsed_block['innerBlocks'] as $child ) {
-		array_push( $inner, ...( $is_slot( $child ) ? $links : array( $child ) ) );
+		array_push( $inner, ...( $is_slot( $child ) ? $menu : array( $child ) ) );
 	}
 	$parsed_block['innerBlocks']  = $inner;
 	$parsed_block['innerContent'] = array_fill( 0, count( $inner ), null );

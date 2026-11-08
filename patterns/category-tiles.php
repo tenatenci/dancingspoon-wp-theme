@@ -3,7 +3,7 @@
  * Title: Browse by category
  * Slug: dancingspoon/category-tiles
  * Categories: dancingspoon
- * Description: A row of round category photos with the name underneath, every category that has recipes (biggest first).
+ * Description: A row of round category photos with the name underneath, every category that has recipes (biggest first); one line up to 8 categories, more wrap.
  */
 $covers = array(
 	'breakfast'   => 'cat-breakfast.jpg',
@@ -43,7 +43,7 @@ if ( ! $cats ) {
 	</div>
 	<!-- /wp:group -->
 	<!-- wp:html -->
-	<ul class="ds-cats" role="list">
+	<ul class="ds-cats alignwide<?php echo count( $cats ) > 8 ? ' ds-cats--wrap' : ''; ?>" role="list">
 		<?php foreach ( $cats as $cat ) : list( $link, $label, $url ) = $cat; ?>
 		<li class="ds-cat"><a class="ds-cat__link" href="<?php echo esc_url( $link ); ?>">
 			<span class="ds-cat__img<?php echo $url ? '' : ' ds-cat__img--initial'; ?>" aria-hidden="true"><?php if ( $url ) : ?><img src="<?php echo esc_url( $url ); ?>" alt="" width="240" height="240" loading="lazy" decoding="async"/><?php else : ?><?php echo esc_html( mb_substr( $label, 0, 1 ) ); ?><?php endif; ?></span>
