@@ -617,10 +617,10 @@ function dancingspoon_categories( string $orderby = 'name' ): array {
 }
 
 /**
- * Header menu: the "Categories" placeholder link in parts/header.html (class ds-nav-categories) becomes one
- * "Categories" dropdown holding a link per category, so a new category shows up in the menu as soon as it has a
- * recipe and the one-line desktop menu stays Home · Recipes · Categories · About · Contact however many there are.
- * In the mobile overlay the dropdown's items continue the plain list (style.css, .ds-nav-cats).
+ * Header menu: the placeholder link in parts/header.html (class ds-nav-categories) becomes one dropdown, labelled
+ * like the placeholder ("What to cook"), holding a link per category, so a new category shows up in the menu as soon
+ * as it has a recipe and the one-line desktop menu stays Home · Recipes · What to cook · About · Contact however many there are.
+ * In the mobile overlay its items continue the plain list (style.css, .ds-nav-cats).
  */
 function dancingspoon_nav_categories( array $parsed_block ): array {
 	if ( 'core/navigation' !== ( $parsed_block['blockName'] ?? '' ) || empty( $parsed_block['innerBlocks'] ) ) {
