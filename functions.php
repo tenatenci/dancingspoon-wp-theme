@@ -54,6 +54,21 @@ function dancingspoon_scripts(): void {
 add_action( 'wp_enqueue_scripts', 'dancingspoon_scripts' );
 
 /**
+ * Cache busting that survives prod's LiteSpeed Cache "Remove Query Strings" (it strips ?ver= at priority 999):
+ * the theme's own CSS/JS get ?ver=<theme version> back last, so a phone that cached the old style.css picks up a
+ * release at once instead of pairing new markup with old CSS.
+ */
+function dancingspoon_asset_version( string $src ): string {
+	$theme = get_template_directory_uri() . '/';
+	if ( '' === $src || ! str_starts_with( set_url_scheme( $src ), set_url_scheme( $theme ) ) || str_contains( $src, '?' ) ) {
+		return $src;
+	}
+	return $src . '?ver=' . rawurlencode( (string) DANCINGSPOON_VERSION );
+}
+add_filter( 'style_loader_src', 'dancingspoon_asset_version', PHP_INT_MAX );
+add_filter( 'script_loader_src', 'dancingspoon_asset_version', PHP_INT_MAX );
+
+/**
  * The footer mark spins (SMIL in parts/footer.html); hold it still for reduced motion.
  */
 function dancingspoon_logo_motion(): void {
