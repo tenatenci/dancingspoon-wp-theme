@@ -637,7 +637,8 @@ function dancingspoon_nav_categories( array $parsed_block ): array {
 		'innerHTML'    => '',
 		'innerContent' => array(),
 	);
-	$links = array_map( $link, dancingspoon_categories() );
+	// array_values: get_terms() can come back with non-sequential keys (plugin filters), and core's WP_Block_List reads innerBlocks from 0
+	$links = array_values( array_map( $link, dancingspoon_categories() ) );
 	$menu  = array();
 	if ( $links ) {
 		$slot   = current( array_filter( $parsed_block['innerBlocks'], $is_slot ) );
