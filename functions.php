@@ -612,6 +612,41 @@ foreach ( array( 'wp_head', 'login_head', 'admin_head' ) as $hook ) {
 add_filter( 'get_site_icon_url', fn() => get_theme_file_uri( 'assets/favicon/icon-512.png' ) );
 
 /**
+ * Link-preview image: pages without an image of their own (home, archives, search, posts with no featured
+ * image) share the logo card assets/images/og-default.png (1200x630). Yoast emits the Open Graph tags, so the
+ * card is added to its image set only when that is still empty; without Yoast the theme prints the tag itself.
+ */
+function dancingspoon_og_default_image(): array {
+	return array(
+		'url'    => get_theme_file_uri( 'assets/images/og-default.png' ) . '?v=' . rawurlencode( (string) wp_get_theme()->get( 'Version' ) ),
+		'width'  => 1200,
+		'height' => 630,
+		'type'   => 'image/png',
+	);
+}
+add_action(
+	'wpseo_add_opengraph_additional_images',
+	function ( $images ): void {
+		if ( is_object( $images ) && ! $images->has_images() ) {
+			$images->add_image( dancingspoon_og_default_image() );
+		}
+	}
+);
+add_action(
+	'wp_head',
+	function (): void {
+		if ( defined( 'WPSEO_VERSION' ) || ( is_singular() && has_post_thumbnail() ) ) {
+			return;
+		}
+		$image = dancingspoon_og_default_image();
+		echo '<meta property="og:image" content="' . esc_url( $image['url'] ) . '">' . "\n";
+		echo '<meta property="og:image:width" content="' . (int) $image['width'] . '">' . "\n";
+		echo '<meta property="og:image:height" content="' . (int) $image['height'] . '">' . "\n";
+	},
+	5
+);
+
+/**
  * The categories the site shows as sections: top level, with at least one post, never the default
  * "Uncategorized". Same rule as the footer's Categories block, so header, footer and the home row agree.
  *
