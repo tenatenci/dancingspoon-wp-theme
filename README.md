@@ -10,6 +10,9 @@ after the `prod` environment's reviewers approve.
 - Christmas look (snow, Santa hat on the mark, greeting bar, evergreen footer):
   Appearance → Customize → Dancing Spoon seasonal. Off by default; the first checkbox turns all of it on.
   The recipes in the "Festive recipes" category (or the one picked there) turn the top card into a slider.
+- Social icons (header, footer, contact page, follow block): Appearance → Customize → Dancing Spoon social links.
+  Instagram, TikTok, Pinterest and YouTube, each with a Show checkbox and its link; all on with the default links
+  out of the box, an empty link falls back to the default.
 - How it works, the network path and the first-time setup:
   https://wordpress-plugin-delivery-1c5177.pages.ops.utr.utrzone.local/latest/
 

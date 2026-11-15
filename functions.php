@@ -711,6 +711,79 @@ function dancingspoon_nav_categories( array $parsed_block ): array {
 add_filter( 'render_block_data', 'dancingspoon_nav_categories' );
 
 /**
+ * Social profiles (Appearance → Customize → Dancing Spoon social links): each of the four networks can be switched
+ * off and given its own link; all on, with the links below, by default. The header, footer, contact card and
+ * "follow" pattern keep these default links in their markup — every social-link block still pointing at one of
+ * them is rewritten to the Customizer link at render time, or dropped when its network is off. Social icons an
+ * author adds to a post with some other link are left alone.
+ *
+ * @return array<string, array{0: string, 1: string}> service => [label, default link]
+ */
+function dancingspoon_social_defaults(): array {
+	return array(
+		'instagram' => array( 'Instagram', 'https://www.instagram.com/dancing.1spoon/' ),
+		'tiktok'    => array( 'TikTok', 'https://www.tiktok.com/@dancing.1spoon' ),
+		'pinterest' => array( 'Pinterest', 'https://de.pinterest.com/tenatomasevic/' ),
+		'youtube'   => array( 'YouTube', 'https://www.youtube.com/@dancing.1spoon/shorts' ),
+	);
+}
+
+function dancingspoon_customize_social( WP_Customize_Manager $wp_customize ): void {
+	$wp_customize->add_section(
+		'dancingspoon_social',
+		array( 'title' => __( 'Dancing Spoon social links', 'dancingspoon' ), 'priority' => 34, 'description' => __( 'The social icons in the header, the footer, the contact page and the "follow" block. Untick a network to hide its icon everywhere; an empty link falls back to the default.', 'dancingspoon' ) )
+	);
+	foreach ( dancingspoon_social_defaults() as $service => list( $label, $url ) ) {
+		$wp_customize->add_setting( "dancingspoon_social_{$service}_on", array( 'default' => true, 'sanitize_callback' => fn( $v ) => (bool) $v ) );
+		/* translators: %s: social network name */
+		$wp_customize->add_control( "dancingspoon_social_{$service}_on", array( 'section' => 'dancingspoon_social', 'label' => sprintf( __( 'Show %s', 'dancingspoon' ), $label ), 'type' => 'checkbox' ) );
+		$wp_customize->add_setting( "dancingspoon_social_{$service}_url", array( 'default' => $url, 'sanitize_callback' => 'esc_url_raw' ) );
+		/* translators: %s: social network name */
+		$wp_customize->add_control( "dancingspoon_social_{$service}_url", array( 'section' => 'dancingspoon_social', 'label' => sprintf( __( '%s link', 'dancingspoon' ), $label ), 'type' => 'url', 'input_attrs' => array( 'placeholder' => $url ) ) );
+	}
+}
+add_action( 'customize_register', 'dancingspoon_customize_social' );
+
+/**
+ * The theme's own social-link block for a parsed block, or null: a core/social-link whose service is one of the
+ * four and whose link is that network's default (or the YouTube link the theme shipped before 0.15.1).
+ */
+function dancingspoon_social_service( array $block ): ?string {
+	if ( 'core/social-link' !== ( $block['blockName'] ?? '' ) ) {
+		return null;
+	}
+	$service  = (string) ( $block['attrs']['service'] ?? '' );
+	$defaults = dancingspoon_social_defaults();
+	if ( ! isset( $defaults[ $service ] ) ) {
+		return null;
+	}
+	$known = array( $defaults[ $service ][1] );
+	if ( 'youtube' === $service ) {
+		$known[] = 'https://www.youtube.com/@tenatomasevic6650';
+	}
+	return in_array( untrailingslashit( (string) ( $block['attrs']['url'] ?? '' ) ), array_map( 'untrailingslashit', $known ), true ) ? $service : null;
+}
+
+function dancingspoon_social_hide( ?string $pre, array $block ): ?string {
+	$service = dancingspoon_social_service( $block );
+	return ( null !== $service && ! get_theme_mod( "dancingspoon_social_{$service}_on", true ) ) ? '' : $pre;
+}
+add_filter( 'pre_render_block', 'dancingspoon_social_hide', 10, 2 );
+
+function dancingspoon_social_url( array $block ): array {
+	$service = dancingspoon_social_service( $block );
+	if ( null !== $service ) {
+		$url                   = trim( (string) get_theme_mod( "dancingspoon_social_{$service}_url", '' ) );
+		$block['attrs']['url'] = '' !== $url ? $url : dancingspoon_social_defaults()[ $service ][1];
+	}
+	return $block;
+}
+add_filter( 'render_block_data', 'dancingspoon_social_url' );
+
+// all four networks off: no empty icon row left behind
+add_filter( 'render_block_core/social-links', fn( string $html ) => str_contains( $html, '<li' ) ? $html : '' );
+
+/**
  * Christmas layout (Appearance → Customize → Dancing Spoon seasonal). One switch, off by default, turns the whole
  * look on: body class ds-xmas drives the CSS (Santa hat on the mark, snow caps on the hero and the evergreen
  * footer, red kickers), a greeting bar sits above the header,
