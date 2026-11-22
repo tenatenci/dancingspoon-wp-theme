@@ -1,6 +1,7 @@
-/* Dancing Spoon — festive slider: a long title is set smaller until it takes the room of two full-size lines
-   (the h1's min-height), so every slide is the same height. Printed inline right after the slider
-   (patterns/hero.php) so it runs before the first paint. Only beside the photo (782px up); never below 60 %.
+/* Dancing Spoon — festive slider: a long title is set smaller until it takes the room of two full-size lines,
+   so no slide is taller than one with a two-line title (the track then stretches every slide to one height).
+   Printed inline right after the slider (patterns/hero.php) so it runs before the first paint. Only beside the
+   photo (782px up); never below 60 %.
    Keep the less-than sign and the ampersand out of this file: inside the block template WordPress (wptexturize)
    reads the first as the start of a tag and rewrites the second, which breaks the script and the page after it. */
 (function () {
@@ -8,14 +9,18 @@
 	var root = me ? me.closest('.ds-hero-fit') : null;
 	if (!root) return;
 	var wide = window.matchMedia('(min-width: 782px)');
-	var tall = function (t, room) { return t.getBoundingClientRect().height > room + 0.5; };
+	// the text's own height (the title's link is an inline-block: whole lines), whatever the h1's box is held to
+	var tall = function (t, room) {
+		var link = t.firstElementChild;
+		return (link ? link.getBoundingClientRect().height : t.scrollHeight) > room + 1;
+	};
 	var fit = function () {
 		root.querySelectorAll('.ds-hero .wp-block-post-title').forEach(function (t) {
 			t.style.removeProperty('--ds-hero-title-fit');
 			if (!wide.matches) return;
 			var cs = getComputedStyle(t);
 			var base = parseFloat(cs.fontSize);
-			var room = parseFloat(cs.minHeight);
+			var room = 2 * (parseFloat(cs.lineHeight) || base * 1.15);   // two lines at the full size
 			if (!(base > 0) || !(room > 0) || !tall(t, room)) return;
 			var lo = base * 0.6;   // the floor: a title that does not fit even here keeps it and its slide grows
 			var hi = base;

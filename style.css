@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.17.0
+Version: 0.17.1
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -610,9 +610,21 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 }
 /* 0.17.0: every slide the same height. A long title used to make its slide (and now its photo) taller than the
    others; assets/js/hero-fit.js sets it smaller (--ds-hero-title-fit) until it takes the room of two full-size
-   lines, which the h1 keeps reserved whatever size it ends up at. Customize → Dancing Spoon seasonal switches it off. */
+   lines. Customize → Dancing Spoon seasonal switches it off.
+   0.17.1: the height is the tallest slide's (the track stretches its cards) instead of two title lines reserved in
+   every h1, which left a blank line under a one-line title. A slide with room to spare spreads it evenly between
+   the label, the tags, the title, the text and the button: the copy column is a flex column, space-between, on top
+   of the margins the block layout already gives. Its children never shrink (the h1 clips its overflow, so as a
+   shrinking flex item it would be squeezed under its own text and hero-fit.js would measure the squeezed box). */
+.ds-hero .wp-block-post-title { min-height: 0; }   /* the grid cards' two-line reserve (.ds-card) is not for the top card, stacked or not */
 @media (min-width: 782px) {
-	.ds-hero-fit .ds-hero .wp-block-post-title { font-size: var(--ds-hero-title-fit, var(--wp--preset--font-size--xx-large)); min-height: calc(2.3 * var(--wp--preset--font-size--xx-large)); }
+	.ds-hero-fit .wp-block-post-template.ds-carousel__track { align-items: stretch; }
+	.ds-hero-fit .ds-hero > .wp-block-columns { flex: 1 1 auto; }
+	.ds-hero-fit .ds-hero .wp-block-column.ds-hero__copy { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; }
+	.ds-hero-fit .ds-hero__copy > * { flex: 0 0 auto; }
+	.ds-hero-fit .ds-hero .wp-block-post-title { font-size: var(--ds-hero-title-fit, var(--wp--preset--font-size--xx-large)); }
+	.ds-hero-fit .ds-hero .wp-block-post-excerpt__excerpt { min-height: 0; }
+	.ds-hero-fit .ds-hero .wp-block-read-more { align-self: flex-start; height: auto; }   /* core gives button links height: 100%, which resolves now that the column has a height */
 }
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
