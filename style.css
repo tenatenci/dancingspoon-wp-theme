@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.16.0
+Version: 0.16.1
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -588,11 +588,26 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-carousel .wp-block-post-template.ds-carousel__track { position: relative; }
 
 /* 0.13.0: the festive slider — the hero card slides through the festive recipes, arrows and dots below it.
-   The photo is never touched: its own ratio on every screen (inline aspect-ratio, see dancingspoon_festive_image_ratio
-   in functions.php), no crop, no overlay; each slide keeps its own height. */
+   Stacked (phones), the photo shows whole at its own ratio (inline aspect-ratio, see dancingspoon_festive_image_ratio
+   in functions.php); beside the copy it fills the card (0.16.1, below). Each slide keeps its own height. */
 .ds-hero-slider .wp-block-post-template.ds-carousel__track { padding-bottom: .5rem; align-items: flex-start; }
 .ds-hero-slider .ds-carousel__track > li { flex: 0 0 100% !important; }
 .ds-hero-slider .ds-hero .wp-block-post-featured-image img { height: auto; object-fit: contain; }
+
+/* 0.16.1: beside the copy (WordPress stacks the columns below 782px) the top card's photo fills the card from top
+   to bottom. It used to keep its own height, centred, so only a photo whose ratio happened to match the copy's
+   height (a 4:3 one) met both edges and every 3:2 photo sat between two white bands. The photo column now
+   stretches to the card and the photo covers it (centre crop); the ::before keeps the old 16:11 as the least
+   height when the copy is short. The photo is absolutely placed, so its own size never drives the card (and the
+   sizes="auto" placeholder cannot, see dancingspoon_festive_image_ratio). Stacked, nothing changes. */
+@media (min-width: 782px) {
+	.ds-hero-query .ds-hero > .wp-block-columns { align-items: stretch !important; }
+	.ds-hero-query .ds-hero .wp-block-column:first-child { display: flex; align-self: stretch; }
+	.ds-hero-query .ds-hero .wp-block-post-featured-image { position: relative; flex: 1 1 auto; width: 100%; margin: 0; }
+	.ds-hero-query .ds-hero .wp-block-post-featured-image::before { content: ""; display: block; padding-top: 68.75%; }
+	.ds-hero-query .ds-hero .wp-block-post-featured-image a { position: absolute; inset: 0; height: auto; }
+	.ds-hero-query .ds-hero .wp-block-post-featured-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+}
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }
