@@ -940,7 +940,8 @@ function dancingspoon_festive_ids(): array {
 
 /**
  * The slider's photos carry their own ratio inline (aspect-ratio: W / H from the attachment's width and height),
- * so they show whole on every screen. The theme's 16:11 hero crop must not apply, but a plain "aspect-ratio: auto"
+ * so they show whole where the card stacks (phones); beside the copy the photo covers the card's height instead
+ * (style.css, 0.16.1). The theme's 16:11 hero crop must not apply, but a plain "aspect-ratio: auto"
  * would also drop the ratio the browser derives from the width/height attributes, and WordPress's lazy-loading
  * markup (sizes="auto") puts such an image under size containment with a 3000 × 1500 placeholder: the photo
  * would render 1500 px tall. An explicit ratio sidesteps both.
