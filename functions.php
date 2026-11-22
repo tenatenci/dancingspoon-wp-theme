@@ -863,6 +863,16 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 		'dancingspoon_xmas_count',
 		array( 'section' => 'dancingspoon_seasonal', 'label' => __( 'Recipes in the festive slider (at most)', 'dancingspoon' ), 'type' => 'select', 'choices' => array( 3 => '3', 6 => '6', 9 => '9' ) )
 	);
+	$wp_customize->add_setting( 'dancingspoon_xmas_fit_titles', array( 'default' => true, 'sanitize_callback' => $bool ) );
+	$wp_customize->add_control(
+		'dancingspoon_xmas_fit_titles',
+		array(
+			'section'     => 'dancingspoon_seasonal',
+			'label'       => __( 'Shrink long titles in the festive slider', 'dancingspoon' ),
+			'description' => __( 'A long recipe title is set smaller so every slide (and its photo) has the same height. Off = every title at full size; a slide with a long title is taller than the others.', 'dancingspoon' ),
+			'type'        => 'checkbox',
+		)
+	);
 }
 add_action( 'customize_register', 'dancingspoon_customize_seasonal' );
 
