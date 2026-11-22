@@ -12,7 +12,8 @@ after the `prod` environment's reviewers approve.
   The recipes in the "Festive recipes" category (or the one picked there) turn the top card into a slider.
   Long titles are set smaller in the slider so every slide has the same height ("Shrink long titles", on by default).
 - Top card (front page): Appearance → Customize → Dancing Spoon front page. Which recipe it shows, the title size
-  (100 / 90 / 80 / 70 %) and the text alignment (title centred — the default —, everything centred, left).
+  (100 / 90 / 80 / 70 %) and the recipe title alignment (title centred — the default —, everything centred, left);
+  the alignment also holds for the titles on every recipe card across the site.
 - Social icons (header, footer, contact page, follow block): Appearance → Customize → Dancing Spoon social links.
   Instagram, TikTok, Pinterest and YouTube, each with a Show checkbox and its link; all on with the default links
   out of the box, an empty link falls back to the default.

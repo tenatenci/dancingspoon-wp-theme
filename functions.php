@@ -177,8 +177,8 @@ function dancingspoon_customize( WP_Customize_Manager $wp_customize ): void {
 		'dancingspoon_hero_align',
 		array(
 			'section'     => 'dancingspoon_front',
-			'label'       => __( 'Top card text alignment', 'dancingspoon' ),
-			'description' => __( 'Title centred: each line of the title sits in the middle, the rest stays left. Everything centred: label, tags, title, text and button.', 'dancingspoon' ),
+			'label'       => __( 'Recipe title alignment', 'dancingspoon' ),
+			'description' => __( 'Title centred: each line of a recipe title sits in the middle, in the top card and on every recipe card across the site; the rest stays left. Everything centred: the same, and the top card also centres its label, tags, text and button. Left: every recipe title starts at the left edge.', 'dancingspoon' ),
 			'type'        => 'select',
 			'choices'     => array(
 				'title' => __( 'Title centred', 'dancingspoon' ),
@@ -907,6 +907,18 @@ function dancingspoon_customize_seasonal( WP_Customize_Manager $wp_customize ): 
 	);
 }
 add_action( 'customize_register', 'dancingspoon_customize_seasonal' );
+
+/**
+ * body.ds-titles-centered: recipe titles on every card are centred unless the alignment setting
+ * (Customize → Dancing Spoon front page) says left. The top card reads the same setting in patterns/hero.php.
+ */
+function dancingspoon_title_align_body_class( array $classes ): array {
+	if ( 'left' !== get_theme_mod( 'dancingspoon_hero_align', 'title' ) ) {
+		$classes[] = 'ds-titles-centered';
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'dancingspoon_title_align_body_class' );
 
 /**
  * body.ds-xmas carries the look.
