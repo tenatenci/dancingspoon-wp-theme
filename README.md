@@ -10,6 +10,7 @@ after the `prod` environment's reviewers approve.
 - Christmas look (snow, Santa hat on the mark, greeting bar, evergreen footer):
   Appearance → Customize → Dancing Spoon seasonal. Off by default; the first checkbox turns all of it on.
   The recipes in the "Festive recipes" category (or the one picked there) turn the top card into a slider.
+  Long titles are set smaller in the slider so every slide has the same height ("Shrink long titles", on by default).
 - Social icons (header, footer, contact page, follow block): Appearance → Customize → Dancing Spoon social links.
   Instagram, TikTok, Pinterest and YouTube, each with a Show checkbox and its link; all on with the default links
   out of the box, an empty link falls back to the default.

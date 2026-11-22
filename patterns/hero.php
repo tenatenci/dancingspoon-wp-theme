@@ -4,11 +4,13 @@
  * Slug: dancingspoon/hero
  * Categories: dancingspoon
  * Block Types: core/query
- * Description: The recipe of the month (or the newest / a random one) as a split hero: photo left, kicker, title, excerpt and a button right. With the Christmas layout on and recipes in the festive category, the card becomes a slider through them.
+ * Description: The recipe of the month (or the newest / a random one) as a split hero: photo left, kicker, title, excerpt and a button right. With the Christmas layout on and recipes in the festive category, the card becomes a slider through them; long titles are set smaller there so every slide has the same height.
  */
 $festive  = dancingspoon_festive_ids();
 $slider   = count( $festive ) > 1;
 $extra    = $slider ? ' ds-carousel ds-hero-slider' : '';   // scrolled by the reader only: no autoplay
+$fit      = $slider && get_theme_mod( 'dancingspoon_xmas_fit_titles', true );   // long titles shrink, slides stay one height
+$extra   .= $fit ? ' ds-hero-fit' : '';
 ?>
 <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":""},"align":"wide","className":"ds-hero-query<?php echo esc_attr( $extra ); ?>"} -->
 <div class="wp-block-query alignwide ds-hero-query<?php echo esc_attr( $extra ); ?>">
@@ -46,6 +48,9 @@ $extra    = $slider ? ' ds-carousel ds-hero-slider' : '';   // scrolled by the r
 		<div class="ds-carousel__dots" data-label="<?php esc_attr_e( 'Festive recipe', 'dancingspoon' ); ?>"></div>
 		<button type="button" class="ds-carousel__btn ds-carousel__next" aria-label="<?php esc_attr_e( 'Next festive recipe', 'dancingspoon' ); ?>"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
 	</div>
+	<?php if ( $fit ) : ?>
+	<script><?php echo file_get_contents( get_theme_file_path( 'assets/js/hero-fit.js' ) ); // phpcs:ignore WordPress.Security.EscapeOutput -- the theme's own file, inline so it runs before the first paint ?></script>
+	<?php endif; ?>
 	<!-- /wp:html -->
 	<?php endif; ?>
 </div>
