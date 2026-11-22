@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.18.1
+Version: 0.19.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -191,7 +191,7 @@ body { --wprm-popup-accent: var(--wp--preset--color--primary) !important; --comm
 .wp-block-post-template.is-layout-grid > li > .ds-card { flex: 1 1 auto; display: flex; flex-direction: column; width: 100%; }
 .ds-card .ds-card__body { display: flex; flex-direction: column; flex: 1 1 auto; }
 .ds-card .ds-card__body > .wp-block-post-date { margin-top: auto; padding-top: .75rem; }
-.ds-card .wp-block-post-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.3em; line-height: 1.15; }
+.ds-card .wp-block-post-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.15; }
 .ds-card .wp-block-post-excerpt { margin: 0; }
 .ds-card .wp-block-post-excerpt__excerpt { -webkit-line-clamp: 3; min-height: calc(3 * 1.65em); }
 .ds-card .wp-block-post-excerpt__more-text { display: none; }
@@ -643,6 +643,19 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 /* 0.18.1: the same centred title on every recipe card — the home grid and carousel, category, tag, search and
    recipes pages, "more recipes" under a recipe. body.ds-titles-centered unless the alignment setting says left. */
 .ds-titles-centered .ds-card .wp-block-post-title { text-align: center; }
+
+/* 0.19.0: one recipe card everywhere — tags, title, the recipe's intro text, date — and the cards of a row end on the
+   same lines. The title takes the lines it needs (no two-line reserve any more); the intro text takes the rest of
+   the card: three lines at least, more where a shorter title leaves room. assets/js/cards.js counts the lines that
+   fit (--ds-lines) and marks the box is-filled when the text is cut at the last of them; a filled box sits on the
+   card's bottom, so the last line and the date line up across the row, and the title is centred in what is left
+   over (--ds-slack). Without the script: three lines, as before.
+   The box never takes its height from the text (fixed basis, clipped), so counting lines cannot move the cards. */
+.ds-card__body > .wp-block-post-excerpt { flex: 1 0 calc(3 * 1.65em); min-height: 0; overflow: hidden; display: grid; align-content: start; }   /* 1.65: the block's line height (theme.json) */
+.ds-card__body > .wp-block-post-excerpt.is-filled { align-content: end; }
+.ds-card__body .wp-block-post-excerpt__excerpt { -webkit-line-clamp: var(--ds-lines, 3); min-height: 0; margin: 0; }
+/* the leftover above a filled text is under a line high; a transform, so moving the title cannot change the room */
+.ds-card__body > .wp-block-post-title { transform: translateY(calc(var(--ds-slack, 0px) / 2)); }
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }
