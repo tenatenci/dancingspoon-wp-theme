@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.18.0
+Version: 0.18.1
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -640,6 +640,9 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 .ds-hero-center-title .ds-hero .wp-block-post-title, .ds-hero-center .ds-hero .wp-block-post-title { text-align: center; }
 .ds-hero-center .ds-hero__copy, .ds-hero-center .ds-hero .wp-block-post-excerpt__excerpt { text-align: center; }
 @media (min-width: 782px) { .ds-hero-center.ds-hero-fit .ds-hero .wp-block-read-more { align-self: center; } }
+/* 0.18.1: the same centred title on every recipe card — the home grid and carousel, category, tag, search and
+   recipes pages, "more recipes" under a recipe. body.ds-titles-centered unless the alignment setting says left. */
+.ds-titles-centered .ds-card .wp-block-post-title { text-align: center; }
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }
