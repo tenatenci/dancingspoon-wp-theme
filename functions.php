@@ -44,6 +44,8 @@ function dancingspoon_scripts(): void {
 	if ( is_page() ) {
 		wp_enqueue_script( 'dancingspoon-contact', get_theme_file_uri( 'assets/js/contact.js' ), array(), wp_get_theme()->get( 'Version' ), true );
 	}
+	// recipe cards are on every listing and under every recipe: the intro text fills the room its card has
+	wp_enqueue_script( 'dancingspoon-cards', get_theme_file_uri( 'assets/js/cards.js' ), array(), DANCINGSPOON_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	if ( is_home() || is_front_page() ) {
 		wp_enqueue_script( 'dancingspoon-carousel', get_theme_file_uri( 'assets/js/carousel.js' ), array(), DANCINGSPOON_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 	}
@@ -100,6 +102,39 @@ add_action( 'init', 'dancingspoon_block_styles' );
  */
 add_filter( 'excerpt_length', fn() => 22, 999 );
 add_filter( 'excerpt_more', fn() => '…' );
+
+/**
+ * A recipe's excerpt is its intro: the text before the first heading or list. WordPress builds an automatic excerpt
+ * from the whole post, so one long enough to fill a card (70 words, patterns and templates) would run on into
+ * "INGREDIENTS NEEDED: All-purpose flour Ground hazelnuts …". A hand-written excerpt is left alone, and so is a
+ * post with no heading or list, or with too little text ahead of the first one. Runs before wp_trim_excerpt (10),
+ * which then finds an excerpt and does not build its own.
+ */
+function dancingspoon_intro_excerpt( $excerpt, $post = null ) {
+	if ( '' !== trim( (string) $excerpt ) ) {
+		return $excerpt;
+	}
+	$post = get_post( $post );
+	if ( ! $post instanceof WP_Post || 'post' !== $post->post_type ) {
+		return $excerpt;
+	}
+	// the first heading, list, recipe box or shortcode block, as markup or as a block comment
+	if ( ! preg_match( '/<h[1-6][\s>]|<[uo]l[\s>]|<!--\s*wp:(?:heading|list|shortcode|html|wp-recipe-maker)|\[wprm-/i', $post->post_content, $m, PREG_OFFSET_CAPTURE ) ) {
+		return $excerpt;
+	}
+	$intro = substr( $post->post_content, 0, $m[0][1] );
+	$intro = preg_replace( '/<figure\b.*?<\/figure>/is', ' ', $intro );   // captions are not intro text
+	$intro = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( strip_shortcodes( (string) $intro ) ) ) );
+	// a lead-in to what follows ("INGREDIENTS NEEDED : Serves 4") is set as a paragraph on some recipes: end on a sentence
+	if ( ! preg_match( '/[.!?…]["\'”’)\]]*$/u', $intro ) && preg_match( '/^(.*[.!?…]["\'”’)\]]*)\s/us', $intro, $whole ) ) {
+		$intro = $whole[1];
+	}
+	if ( count( preg_split( '/\s+/', $intro, -1, PREG_SPLIT_NO_EMPTY ) ) < 12 ) {
+		return $excerpt;
+	}
+	return wp_trim_words( $intro, (int) apply_filters( 'excerpt_length', 55 ), apply_filters( 'excerpt_more', ' [&hellip;]' ) );
+}
+add_filter( 'get_the_excerpt', 'dancingspoon_intro_excerpt', 9, 2 );
 
 /**
  * Image sizes list for the editor.

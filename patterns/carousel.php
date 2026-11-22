@@ -35,6 +35,7 @@ $title    = 'random' === $mode ? __( 'You might also like', 'dancingspoon' ) : _
 				<div class="wp-block-group ds-card__body">
 					<!-- wp:post-terms {"term":"category","className":"is-style-pill"} /-->
 					<!-- wp:post-title {"level":3,"isLink":true} /-->
+					<!-- wp:post-excerpt {"excerptLength":70} /-->
 					<!-- wp:post-date {"format":"F j, Y","style":{"spacing":{"margin":{"top":"var:preset|spacing|20"}}}} /-->
 				</div>
 				<!-- /wp:group -->
