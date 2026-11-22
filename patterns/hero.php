@@ -11,6 +11,10 @@ $slider   = count( $festive ) > 1;
 $extra    = $slider ? ' ds-carousel ds-hero-slider' : '';   // scrolled by the reader only: no autoplay
 $fit      = $slider && get_theme_mod( 'dancingspoon_xmas_fit_titles', true );   // long titles shrink, slides stay one height
 $extra   .= $fit ? ' ds-hero-fit' : '';
+$size     = (int) get_theme_mod( 'dancingspoon_hero_title_size', 100 );   // Customize → Dancing Spoon front page
+$extra   .= in_array( $size, array( 90, 80, 70 ), true ) ? ' ds-hero-title-' . $size : '';
+$align    = get_theme_mod( 'dancingspoon_hero_align', 'title' );
+$extra   .= 'all' === $align ? ' ds-hero-center' : ( 'left' === $align ? '' : ' ds-hero-center-title' );
 ?>
 <!-- wp:query {"queryId":1,"query":{"perPage":1,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false,"sticky":""},"align":"wide","className":"ds-hero-query<?php echo esc_attr( $extra ); ?>"} -->
 <div class="wp-block-query alignwide ds-hero-query<?php echo esc_attr( $extra ); ?>">

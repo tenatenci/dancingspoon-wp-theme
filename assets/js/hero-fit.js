@@ -33,9 +33,27 @@
 		});
 	};
 	fit();
-	// the heading font swaps in after the first paint, and the column's width follows the window
-	var fonts = document.fonts ? document.fonts.ready : null;
-	if (fonts) { fonts.then(fit); }
+	root.classList.add('ds-hero-fit--on');   // lifts the two-line cap style.css holds the titles under until now
+	// The heading font swaps in after the first paint and sets the titles wider. A hidden line of text in that font
+	// changes width in the very frame the font arrives, and a ResizeObserver runs before that frame is painted, so
+	// the refit is never a frame late (fonts.ready is, by a few frames). The probe is not a title: watching the
+	// titles themselves would loop, the fit resizes them.
+	var first = root.querySelector('.ds-hero .wp-block-post-title');
+	if (first ? window.ResizeObserver : false) {
+		var cs = getComputedStyle(first);
+		var probe = document.createElement('span');
+		probe.setAttribute('aria-hidden', 'true');
+		probe.textContent = first.textContent;
+		probe.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;pointer-events:none;white-space:nowrap;font-size:16px';
+		probe.style.fontFamily = cs.fontFamily;
+		probe.style.fontWeight = cs.fontWeight;
+		probe.style.fontStyle = cs.fontStyle;
+		root.appendChild(probe);
+		new ResizeObserver(fit).observe(probe);
+	} else if (document.fonts) {
+		document.fonts.ready.then(fit);
+	}
+	// and the column's width follows the window
 	var width = window.innerWidth;
 	var pending = false;
 	window.addEventListener('resize', function () {

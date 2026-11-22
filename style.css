@@ -3,7 +3,7 @@ Theme Name: Dancing Spoon
 Theme URI: https://dancingspoon.net
 Author: tenatenci
 Description: A modern block theme for the Dancing Spoon food blog — cream and plum, Gloock headings, recipe cards built for WP Recipe Maker. Version header is the release version the pipeline tags and deploys.
-Version: 0.17.1
+Version: 0.18.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -50,7 +50,9 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 .ds-hero { border-radius: calc(var(--ds-radius) * 2); overflow: hidden; }
 .ds-hero .wp-block-post-featured-image img { aspect-ratio: 16 / 11; object-fit: cover; width: 100%; display: block; }
 .ds-hero__copy { padding: clamp(1.5rem, 4vw, 3.5rem); }
-.ds-hero .wp-block-post-title { font-size: var(--wp--preset--font-size--xx-large); margin: .5rem 0 1rem; }
+/* the top card's title size: one value per breakpoint, times the Customizer's choice (.ds-hero-title-90/80/70 on the query) */
+.ds-hero { --ds-hero-title: calc(var(--ds-hero-title-scale, 1) * var(--wp--preset--font-size--xx-large)); }
+.ds-hero .wp-block-post-title { font-size: var(--ds-hero-title); margin: .5rem 0 1rem; }
 .ds-kicker { font-size: var(--wp--preset--font-size--x-small); font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--wp--preset--color--accent); }
 
 /* ---------- section titles ---------- */
@@ -115,7 +117,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
 .wp-block-post-comments-form .submit { border-radius: 999px; }
 
 /* ---------- misc ---------- */
-@media (max-width: 781px) { .ds-hero .wp-block-post-title { font-size: var(--wp--preset--font-size--x-large); } .ds-header .wp-block-site-logo img { width: 56px; height: 56px; } }
+@media (max-width: 781px) { .ds-hero { --ds-hero-title: calc(var(--ds-hero-title-scale, 1) * var(--wp--preset--font-size--x-large)); } .ds-header .wp-block-site-logo img { width: 56px; height: 56px; } }
 @media (prefers-reduced-motion: reduce) { .ds-card, .ds-card img, .ds-cat__img, .ds-cat__img img { transition: none !important; } }
 @media print { .ds-header, .ds-footer, .wp-block-comments, .wp-block-post-comments-form { display: none !important; } }
 
@@ -440,7 +442,7 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 /* phones: hero and section rhythm a little tighter, buttons full width where they stack */
 @media (max-width: 600px) {
 	.ds-hero__copy { padding: 1.25rem 1.25rem 1.5rem; }
-	.ds-hero .wp-block-post-title { font-size: 1.9rem; }
+	.ds-hero { --ds-hero-title: calc(var(--ds-hero-title-scale, 1) * 1.9rem); }
 	main > .wp-block-group.ds-section { margin-top: 2.5rem !important; }
 	.ds-single-actions .wp-block-shortcode { display: inline-block; }
 	.ds-contact__lede { font-size: 1.3rem; }
@@ -622,10 +624,22 @@ main + .ds-footer { margin-top: var(--wp--preset--spacing--70) !important; }
 	.ds-hero-fit .ds-hero > .wp-block-columns { flex: 1 1 auto; }
 	.ds-hero-fit .ds-hero .wp-block-column.ds-hero__copy { align-self: stretch; display: flex; flex-direction: column; justify-content: space-between; }
 	.ds-hero-fit .ds-hero__copy > * { flex: 0 0 auto; }
-	.ds-hero-fit .ds-hero .wp-block-post-title { font-size: var(--ds-hero-title-fit, var(--wp--preset--font-size--xx-large)); }
+	.ds-hero-fit .ds-hero .wp-block-post-title { font-size: var(--ds-hero-title-fit, var(--ds-hero-title)); }
+	/* 0.17.2: until hero-fit.js has run (a first paint can come while the slider is still being parsed) a title is
+	   held to the two lines it will be fitted into, so the slides never start out taller and jump back */
+	.ds-hero-fit:not(.ds-hero-fit--on) .ds-hero .wp-block-post-title { max-height: calc(2.3 * var(--ds-hero-title)); }
 	.ds-hero-fit .ds-hero .wp-block-post-excerpt__excerpt { min-height: 0; }
 	.ds-hero-fit .ds-hero .wp-block-read-more { align-self: flex-start; height: auto; }   /* core gives button links height: 100%, which resolves now that the column has a height */
 }
+/* 0.18.0: Customize → Dancing Spoon front page. Title size: the query carries .ds-hero-title-90/80/70 (nothing = full
+   size). Alignment: .ds-hero-center-title centres the title's lines (a second line used to start at the left edge),
+   .ds-hero-center centres the whole copy; nothing = left. */
+.ds-hero-title-90 { --ds-hero-title-scale: .9; }
+.ds-hero-title-80 { --ds-hero-title-scale: .8; }
+.ds-hero-title-70 { --ds-hero-title-scale: .7; }
+.ds-hero-center-title .ds-hero .wp-block-post-title, .ds-hero-center .ds-hero .wp-block-post-title { text-align: center; }
+.ds-hero-center .ds-hero__copy, .ds-hero-center .ds-hero .wp-block-post-excerpt__excerpt { text-align: center; }
+@media (min-width: 782px) { .ds-hero-center.ds-hero-fit .ds-hero .wp-block-read-more { align-self: center; } }
 .ds-hero-slider__nav { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .5rem; }
 .ds-carousel__dots { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
 .ds-carousel__dot { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: var(--wp--preset--color--oat); cursor: pointer; transition: background var(--ds-ease), transform var(--ds-ease); }

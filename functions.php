@@ -155,6 +155,38 @@ function dancingspoon_customize( WP_Customize_Manager $wp_customize ): void {
 			'choices' => $choices,
 		)
 	);
+	$wp_customize->add_setting(
+		'dancingspoon_hero_title_size',
+		array( 'default' => 100, 'sanitize_callback' => fn( $v ) => in_array( (int) $v, array( 100, 90, 80, 70 ), true ) ? (int) $v : 100 )
+	);
+	$wp_customize->add_control(
+		'dancingspoon_hero_title_size',
+		array(
+			'section'     => 'dancingspoon_front',
+			'label'       => __( 'Top card title size', 'dancingspoon' ),
+			'description' => __( 'For every title in the top card, festive slider included. A single long title needs no setting: the slider sets it smaller on its own until it fits two lines of this size (Dancing Spoon seasonal → Shrink long titles).', 'dancingspoon' ),
+			'type'        => 'select',
+			'choices'     => array( 100 => __( 'Large (100 %)', 'dancingspoon' ), 90 => '90 %', 80 => '80 %', 70 => '70 %' ),
+		)
+	);
+	$wp_customize->add_setting(
+		'dancingspoon_hero_align',
+		array( 'default' => 'title', 'sanitize_callback' => fn( $v ) => in_array( $v, array( 'left', 'title', 'all' ), true ) ? $v : 'title' )
+	);
+	$wp_customize->add_control(
+		'dancingspoon_hero_align',
+		array(
+			'section'     => 'dancingspoon_front',
+			'label'       => __( 'Top card text alignment', 'dancingspoon' ),
+			'description' => __( 'Title centred: each line of the title sits in the middle, the rest stays left. Everything centred: label, tags, title, text and button.', 'dancingspoon' ),
+			'type'        => 'select',
+			'choices'     => array(
+				'title' => __( 'Title centred', 'dancingspoon' ),
+				'all'   => __( 'Everything centred', 'dancingspoon' ),
+				'left'  => __( 'Left', 'dancingspoon' ),
+			),
+		)
+	);
 	$wp_customize->add_setting( 'dancingspoon_grid_mode', array( 'default' => 'latest', 'sanitize_callback' => $mode ) );
 	$wp_customize->add_control(
 		'dancingspoon_grid_mode',
